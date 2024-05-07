@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: AnarchadiaMC <166779226+AnarchadiaMC@users.noreply.github.com>
+Date: Tue, 7 May 2024 17:25:26 -0500
+Subject: [PATCH] Removed player floating/flight check
+
+
+diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index 5e9202bc7fc649764568b55d66ba0d684118c00c..ab893febf2e8e0a4007502975ee402931bd97fac 100644
+--- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -1591,7 +1591,7 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+                                 this.player.absMoveTo(d0, d1, d2, f, f1);
+                                 boolean flag4 = this.player.isAutoSpinAttack();
+ 
+-                                this.clientIsFloating = d11 >= -0.03125D && !flag2 && this.player.gameMode.getGameModeForPlayer() != GameType.SPECTATOR && !this.server.isFlightAllowed() && !this.player.getAbilities().mayfly && !this.player.hasEffect(MobEffects.LEVITATION) && !flag && !flag4 && this.noBlocksAround(this.player);
++                                this.clientIsFloating = false; // Anarchadia - Remove flight check. //d11 >= -0.03125D && !flag2 && this.player.gameMode.getGameModeForPlayer() != GameType.SPECTATOR && !this.server.isFlightAllowed() && !this.player.getAbilities().mayfly && !this.player.hasEffect(MobEffects.LEVITATION) && !flag && !flag4 && this.noBlocksAround(this.player);
+                                 this.player.serverLevel().getChunkSource().move(this.player);
+                                 this.player.doCheckFallDamage(this.player.getX() - d3, this.player.getY() - d4, this.player.getZ() - d5, packet.isOnGround());
+                                 this.player.setOnGroundWithKnownMovement(packet.isOnGround(), new Vec3(this.player.getX() - d3, this.player.getY() - d4, this.player.getZ() - d5));
