@@ -82,10 +82,10 @@ index b49eb019cce58049c2b3a0e80e3d08998b16f7ea..af18de11dd55938b6091f5ab183bd3fe
  
          public Mutable(ItemEnchantments enchantmentsComponent) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/inventory/CraftItemStack.java b/src/main/java/org/bukkit/craftbukkit/inventory/CraftItemStack.java
-index b6521462d193bff83ace1dc694c6d957a7173969..d302767e8f01fdfcba9c22e2e35677afc18c0641 100644
+index b6521462d193bff83ace1dc694c6d957a7173969..6ad6181a6f2c7e2a3de61bec68f1ca1ef5dc494d 100644
 --- a/src/main/java/org/bukkit/craftbukkit/inventory/CraftItemStack.java
 +++ b/src/main/java/org/bukkit/craftbukkit/inventory/CraftItemStack.java
-@@ -191,16 +191,11 @@ public final class CraftItemStack extends ItemStack {
+@@ -191,16 +191,13 @@ public final class CraftItemStack extends ItemStack {
      public void addUnsafeEnchantment(Enchantment ench, int level) {
          Preconditions.checkArgument(ench != null, "Enchantment cannot be null");
  
@@ -95,19 +95,20 @@ index b6521462d193bff83ace1dc694c6d957a7173969..d302767e8f01fdfcba9c22e2e35677af
 -        ItemEnchantments list = CraftItemStack.getEnchantmentList(this.handle);
 -        if (list == null) {
 -            list = ItemEnchantments.EMPTY;
--        }
++        // Paper start - Replace whole method
++        final ItemMeta itemMeta = this.getItemMeta();
++        if (itemMeta != null) {
++            itemMeta.addEnchant(ench, level, true);
++            this.setItemMeta(itemMeta);
+         }
 -        ItemEnchantments.Mutable listCopy = new ItemEnchantments.Mutable(list);
 -        listCopy.set(CraftEnchantment.bukkitToMinecraft(ench), level);
 -        this.handle.set(DataComponents.ENCHANTMENTS, listCopy.toImmutable());
-+        // Paper start - Replace whole method
-+        final ItemMeta itemMeta = this.getItemMeta();
-+        itemMeta.addEnchant(ench, level, true);
-+        this.setItemMeta(itemMeta);
 +        // Paper end
      }
  
      static boolean makeTag(net.minecraft.world.item.ItemStack item) {
-@@ -229,24 +224,15 @@ public final class CraftItemStack extends ItemStack {
+@@ -229,24 +226,15 @@ public final class CraftItemStack extends ItemStack {
      public int removeEnchantment(Enchantment ench) {
          Preconditions.checkArgument(ench != null, "Enchantment cannot be null");
  
@@ -140,7 +141,7 @@ index b6521462d193bff83ace1dc694c6d957a7173969..d302767e8f01fdfcba9c22e2e35677af
  
          return level;
      }
-@@ -258,7 +244,7 @@ public final class CraftItemStack extends ItemStack {
+@@ -258,7 +246,7 @@ public final class CraftItemStack extends ItemStack {
  
      @Override
      public Map<Enchantment, Integer> getEnchantments() {
@@ -264,15 +265,16 @@ index 9e23cdef8bd166937093452009f50b86e683cc57..a052c2dab5af99355737a88f75cb0b2e
 +
  }
 diff --git a/src/main/java/org/bukkit/craftbukkit/profile/CraftPlayerProfile.java b/src/main/java/org/bukkit/craftbukkit/profile/CraftPlayerProfile.java
-index 358af0121ce3d87a9f51da2bae0699034c1560b4..44174c5a7b255af489c1e4bf589299e6bdbb90a3 100644
+index 358af0121ce3d87a9f51da2bae0699034c1560b4..94cae8f3c13d0afcbe97478fba34ff4f12f8c7ee 100644
 --- a/src/main/java/org/bukkit/craftbukkit/profile/CraftPlayerProfile.java
 +++ b/src/main/java/org/bukkit/craftbukkit/profile/CraftPlayerProfile.java
-@@ -37,6 +37,16 @@ public final class CraftPlayerProfile implements PlayerProfile {
+@@ -37,6 +37,17 @@ public final class CraftPlayerProfile implements PlayerProfile {
          boolean isValidSkullProfile = (gameProfile.getName() != null)
                  || gameProfile.getProperties().containsKey(CraftPlayerTextures.PROPERTY_NAME);
          Preconditions.checkArgument(isValidSkullProfile, "The skull profile is missing a name or textures!");
 +        // Paper start - Validate
 +        Preconditions.checkArgument(gameProfile.getName().length() <= 16, "The name of the profile is longer than 16 characters");
++        Preconditions.checkArgument(net.minecraft.util.StringUtil.isValidPlayerName(gameProfile.getName()), "The name of the profile contains invalid characters: %s", gameProfile.getName());
 +        final PropertyMap properties = gameProfile.getProperties();
 +        Preconditions.checkArgument(properties.size() <= 16, "The profile contains more than 16 properties");
 +        for (final Property property : properties.values()) {
@@ -284,15 +286,16 @@ index 358af0121ce3d87a9f51da2bae0699034c1560b4..44174c5a7b255af489c1e4bf589299e6
          return gameProfile;
      }
  
-@@ -53,6 +63,7 @@ public final class CraftPlayerProfile implements PlayerProfile {
+@@ -53,6 +64,8 @@ public final class CraftPlayerProfile implements PlayerProfile {
  
      public CraftPlayerProfile(UUID uniqueId, String name) {
          Preconditions.checkArgument((uniqueId != null) || !StringUtils.isBlank(name), "uniqueId is null or name is blank");
 +        Preconditions.checkArgument(name == null || name.length() <= 16, "The name of the profile is longer than 16 characters"); // Paper - Validate
++        Preconditions.checkArgument(name == null || net.minecraft.util.StringUtil.isValidPlayerName(name), "The name of the profile contains invalid characters: %s", name); // Paper - Validate
          this.uniqueId = (uniqueId == null) ? Util.NIL_UUID : uniqueId;
          this.name = (name == null) ? "" : name;
      }
-@@ -89,6 +100,7 @@ public final class CraftPlayerProfile implements PlayerProfile {
+@@ -89,6 +102,7 @@ public final class CraftPlayerProfile implements PlayerProfile {
          // Assert: (property == null) || property.getName().equals(propertyName)
          this.removeProperty(propertyName);
          if (property != null) {

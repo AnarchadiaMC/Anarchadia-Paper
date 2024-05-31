@@ -12,6 +12,7 @@ Co-authored-by: Amin <amin.haddou@frg.wwschool.de>
 Co-authored-by: TrollyLoki <trollyloki@gmail.com>
 Co-authored-by: FireInstall <kettnerl@hu-berlin.de>
 Co-authored-by: maxcom1 <46265094+maxcom1@users.noreply.github.com>
+Co-authored-by: TotalledZebra <Holappa57@gmail.com>
 
 diff --git a/src/main/java/io/papermc/paper/entity/SchoolableFish.java b/src/main/java/io/papermc/paper/entity/SchoolableFish.java
 new file mode 100644
@@ -348,6 +349,36 @@ index 191ce6c0e32ab3d05b1376e0fa56d1292c2d442c..8de09075e14a08a6c68f9c24e8960cc0
   */
 -public interface Cod extends Fish { }
 +public interface Cod extends io.papermc.paper.entity.SchoolableFish { } // Paper - Schooling Fish API
+diff --git a/src/main/java/org/bukkit/entity/Damageable.java b/src/main/java/org/bukkit/entity/Damageable.java
+index c4537080ee1875e984356eee42337a1342f4c9a3..f89edd9c129802f70eac022ff6bf80bef378f5e8 100644
+--- a/src/main/java/org/bukkit/entity/Damageable.java
++++ b/src/main/java/org/bukkit/entity/Damageable.java
+@@ -53,6 +53,25 @@ public interface Damageable extends Entity {
+      */
+     void setHealth(double health);
+ 
++    // Paper start - entity heal API
++    /**
++     * Heal this entity by the given amount. This will call {@link org.bukkit.event.entity.EntityRegainHealthEvent}.
++     *
++     * @param amount heal amount
++     */
++    default void heal(final double amount) {
++        this.heal(amount, org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason.CUSTOM);
++    }
++
++    /**
++     * Heal this entity by the given amount. This will call {@link org.bukkit.event.entity.EntityRegainHealthEvent}.
++     *
++     * @param amount heal amount
++     * @param reason heal reason
++     */
++    void heal(double amount, @NotNull org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason reason);
++    // Paper end - entity heal API
++
+     /**
+      * Gets the entity's absorption amount.
+      *
 diff --git a/src/main/java/org/bukkit/entity/Enderman.java b/src/main/java/org/bukkit/entity/Enderman.java
 index 58191017244f3949f6174fb108e3a245738a53c4..61672c6faf94aa497145aadd634bb10103c7b05a 100644
 --- a/src/main/java/org/bukkit/entity/Enderman.java
@@ -462,9 +493,23 @@ index c7d6a328def83619dca9b6122aeb5870e4585e70..795e799fec7cfd65a0e08bb3f941148d
       * Mark the entity's removal.
       *
 diff --git a/src/main/java/org/bukkit/entity/Fireball.java b/src/main/java/org/bukkit/entity/Fireball.java
-index ceaf263bc554a92a232bd3ed18ea67ce4e0b487a..dc8ed9164f22eb140e16b9b25a82f85b873ada42 100644
+index ceaf263bc554a92a232bd3ed18ea67ce4e0b487a..fcb8a7c3e885a89191556bf4ee5edab2e926d4b1 100644
 --- a/src/main/java/org/bukkit/entity/Fireball.java
 +++ b/src/main/java/org/bukkit/entity/Fireball.java
+@@ -12,11 +12,11 @@ public interface Fireball extends Projectile, Explosive {
+      * Sets the direction the fireball should be flying towards.
+      * The direction vector will be normalized and the default speed will be applied.
+      * <br>
+-     * To also change the speed of the fireball, use {@link #setVelocity(Vector)}.
++     * To also change the acceleration of the fireball, use {@link #setPower(Vector)}.
+      * <b>Note:</b> that the client may not respect non-default speeds and will therefore
+      * mispredict the location of the fireball, causing visual stutter.
+      * <br>
+-     * <b>Also Note:</b> that this method and {@link #setVelocity(Vector)} will override each other.
++     * <b>Also Note:</b> that this method and {@link #setPower(Vector)} will override each other.
+      *
+      * @param direction the direction this fireball should be flying towards
+      * @see #setVelocity(Vector)
 @@ -32,4 +32,32 @@ public interface Fireball extends Projectile, Explosive {
      @NotNull
      public Vector getDirection();
@@ -724,15 +769,15 @@ index d23226ccb0f6c25028f000ce31346cd0a8898e6a..bc84b892cae5fe7019a3ad481e9da799
 +    // Paper end
  }
 diff --git a/src/main/java/org/bukkit/entity/Mob.java b/src/main/java/org/bukkit/entity/Mob.java
-index 11b6d1aba7d1f6ae1f3c822193486f5a1478e105..709c8fc3dde786f45ff13d6ee6c405ffdc765282 100644
+index 5fd723c9fdda81595db8b150d967ff3bd5cea608..91d31e5418a5ab7cefd7c02a41bbec8464fe7ab1 100644
 --- a/src/main/java/org/bukkit/entity/Mob.java
 +++ b/src/main/java/org/bukkit/entity/Mob.java
-@@ -162,4 +162,38 @@ public interface Mob extends LivingEntity, Lootable {
-      */
-     @Nullable
-     public Sound getAmbientSound();
+@@ -170,4 +170,38 @@ public interface Mob extends LivingEntity, Lootable {
+         this.setSeed(seed);
+     }
+     // Paper end - LootTable API
 +
-+    // Paper start
++    // Paper start - Missing Entity API
 +    /**
 +     * Some mobs will raise their arm(s) when aggressive:
 +     * <ul>
@@ -764,7 +809,7 @@ index 11b6d1aba7d1f6ae1f3c822193486f5a1478e105..709c8fc3dde786f45ff13d6ee6c405ff
 +     * @see #isAggressive()
 +     */
 +    void setAggressive(boolean aggressive);
-+    // Paper end
++    // Paper end - Missing Entity API
  }
 diff --git a/src/main/java/org/bukkit/entity/Panda.java b/src/main/java/org/bukkit/entity/Panda.java
 index 1f027927a1194f4f8e86c1375a2772e6e261c151..aa5686df134185334a74429576ff0709a604dbfd 100644
