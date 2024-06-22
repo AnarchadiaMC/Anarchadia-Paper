@@ -5,19 +5,19 @@ Subject: [PATCH] Disable explosion knockback
 
 
 diff --git a/src/main/java/net/minecraft/world/level/Explosion.java b/src/main/java/net/minecraft/world/level/Explosion.java
-index 8faa868787d63663cf844a9a6782a13405b30372..da9a9b235d1c8bcab3762134d69dcb112470e55d 100644
+index 55d66aa8264d5b444a23e2132206bcc9835cfe00..d93ed33d5ae72e9dd3e6cf044ef79e4b9689dc1c 100644
 --- a/src/main/java/net/minecraft/world/level/Explosion.java
 +++ b/src/main/java/net/minecraft/world/level/Explosion.java
-@@ -284,7 +284,7 @@ public class Explosion {
+@@ -285,7 +285,7 @@ public class Explosion {
                          if (entity instanceof LivingEntity) {
                              LivingEntity entityliving = (LivingEntity) entity;
  
--                            d13 = ProtectionEnchantment.getExplosionKnockbackAfterDampener(entityliving, d12);
-+                            d13 = entity instanceof Player && level.paperConfig().environment.disableExplosionKnockback ? 0 : ProtectionEnchantment.getExplosionKnockbackAfterDampener(entityliving, d12); // Paper - Option to disable explosion knockback
+-                            d13 = d12 * (1.0D - entityliving.getAttributeValue(Attributes.EXPLOSION_KNOCKBACK_RESISTANCE));
++                            d13 = entity instanceof Player && this.level.paperConfig().environment.disableExplosionKnockback ? 0 : d12 * (1.0D - entityliving.getAttributeValue(Attributes.EXPLOSION_KNOCKBACK_RESISTANCE));
                          } else {
                              d13 = d12;
                          }
-@@ -309,7 +309,7 @@ public class Explosion {
+@@ -310,7 +310,7 @@ public class Explosion {
                          if (entity instanceof Player) {
                              Player entityhuman = (Player) entity;
  

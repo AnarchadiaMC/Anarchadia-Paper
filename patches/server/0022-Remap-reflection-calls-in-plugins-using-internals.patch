@@ -6,7 +6,7 @@ Subject: [PATCH] Remap reflection calls in plugins using internals
 Co-authored-by: Jason Penilla <11360596+jpenilla@users.noreply.github.com>
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 2868eb8f9e577ce839d7ecf5ce8fed5bad957dbe..158779a3590f089c4224b2b128c2e653aef42a94 100644
+index 8350fc099b68918fb03a21b6a5047ceee72dcbb4..708448e071ddb5558658d3096b1d7ee2593ec8c5 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -47,6 +47,12 @@ dependencies {
@@ -608,7 +608,7 @@ index 0000000000000000000000000000000000000000..5fa5868e82d1f00498d0c5771369e171
 +    }
 +}
 diff --git a/src/main/java/io/papermc/paper/util/MappingEnvironment.java b/src/main/java/io/papermc/paper/util/MappingEnvironment.java
-index 8e4229634d41a42b3d93948eebb77def7c0c72b1..4d57213c9917ea965bfe06a5d242e61422457ee2 100644
+index 8e4229634d41a42b3d93948eebb77def7c0c72b1..2458685e7612040cea9d638dd2d945da1399ed77 100644
 --- a/src/main/java/io/papermc/paper/util/MappingEnvironment.java
 +++ b/src/main/java/io/papermc/paper/util/MappingEnvironment.java
 @@ -10,6 +10,8 @@ import org.checkerframework.framework.qual.DefaultQualifier;
@@ -616,7 +616,7 @@ index 8e4229634d41a42b3d93948eebb77def7c0c72b1..4d57213c9917ea965bfe06a5d242e614
  @DefaultQualifier(NonNull.class)
  public final class MappingEnvironment {
 +    public static final boolean DISABLE_PLUGIN_REWRITING = Boolean.getBoolean("paper.disable-plugin-rewriting");
-+    public static final String LEGACY_CB_VERSION = "v1_20_R4";
++    public static final String LEGACY_CB_VERSION = "v1_21_R1";
      private static final @Nullable String MAPPINGS_HASH = readMappingsHash();
      private static final boolean REOBF = checkReobf();
  
@@ -645,11 +645,11 @@ index 242811578a786e3807a1a7019d472d5a68f87116..0b65fdf53124f3dd042b2363b1b8df8e
              return traceElements;
          }
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/Commodore.java b/src/main/java/org/bukkit/craftbukkit/util/Commodore.java
-index 3d3d77d66588aaf709a9f7688400ee661e181b4b..c6956b9241634e455a520f4fd3bd8c4b5a58eb9d 100644
+index 51452d8a8969a303be1be5851b251243a5944be3..8757d4de8a589355b83690d37d9e81ce3cc6ae32 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/Commodore.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/Commodore.java
-@@ -76,36 +76,26 @@ public class Commodore {
-     private static final Map<String, RerouteMethodData> FIELD_RENAME_METHOD_REROUTE = Commodore.createReroutes(FieldRename.class);
+@@ -86,36 +86,26 @@ public class Commodore {
+     private static final Map<String, RerouteMethodData> METHOD_REROUTE = Commodore.createReroutes(MethodRerouting.class);
  
      // Paper start - Plugin rewrites
 -    private static final Map<String, String> SEARCH_AND_REMOVE = initReplacementsMap();
@@ -696,7 +696,7 @@ index 3d3d77d66588aaf709a9f7688400ee661e181b4b..c6956b9241634e455a520f4fd3bd8c4b
      }
      // Paper end - Plugin rewrites
  
-@@ -176,7 +166,7 @@ public class Commodore {
+@@ -186,7 +176,7 @@ public class Commodore {
          ClassReader cr = new ClassReader(b);
          ClassWriter cw = new ClassWriter(cr, 0);
  
@@ -706,10 +706,10 @@ index 3d3d77d66588aaf709a9f7688400ee661e181b4b..c6956b9241634e455a520f4fd3bd8c4b
              String className;
              boolean isInterface;
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-index 81a11402fda54ff40039fa23c53abb3572dccadf..73616ac642c67d4591775fdef08e720c1ab612a4 100644
+index 297767f64c1a7c01cffd6d78e71b60746622f22e..d551c9d898d8b5128dfef84d206396c84072abe4 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-@@ -360,7 +360,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
+@@ -361,7 +361,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
              throw new InvalidPluginException("Plugin API version " + pdf.getAPIVersion() + " is lower than the minimum allowed version. Please update or replace it.");
          }
  
@@ -718,11 +718,11 @@ index 81a11402fda54ff40039fa23c53abb3572dccadf..73616ac642c67d4591775fdef08e720c
              CraftLegacy.init();
          }
  
-@@ -375,6 +375,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
+@@ -376,6 +376,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
  
      @Override
      public byte[] processClass(PluginDescriptionFile pdf, String path, byte[] clazz) {
 +        if (io.papermc.paper.util.MappingEnvironment.DISABLE_PLUGIN_REWRITING) return clazz; // Paper
          try {
-             clazz = Commodore.convert(clazz, pdf.getName(), ApiVersion.getOrCreateVersion(pdf.getAPIVersion()));
+             clazz = Commodore.convert(clazz, pdf.getName(), ApiVersion.getOrCreateVersion(pdf.getAPIVersion()), ((CraftServer) Bukkit.getServer()).activeCompatibilities);
          } catch (Exception ex) {

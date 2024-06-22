@@ -21,10 +21,10 @@ index 3126e8cab3c40e3af47f4c8925e1c6a9523309ba..3207166061bf9c4d7bf3f38e5a9f7aff
      public static Predicate<Entity> withinDistance(double x, double y, double z, double max) {
          double d4 = max * max;
 diff --git a/src/main/java/net/minecraft/world/entity/Mob.java b/src/main/java/net/minecraft/world/entity/Mob.java
-index c8ff4b01186f924473b9ffde948d7f0573e8d56f..426fa1798087ab1fb4198bd036f498606dce7c3f 100644
+index 51b33ea29af0f4010dfb8a1a7503cb7ca463209e..e81a25462239dbb3993f31ff927bd809aef0a124 100644
 --- a/src/main/java/net/minecraft/world/entity/Mob.java
 +++ b/src/main/java/net/minecraft/world/entity/Mob.java
-@@ -907,7 +907,7 @@ public abstract class Mob extends LivingEntity implements EquipmentUser, Targeti
+@@ -862,7 +862,7 @@ public abstract class Mob extends LivingEntity implements EquipmentUser, Leashab
          if (this.level().getDifficulty() == Difficulty.PEACEFUL && this.shouldDespawnInPeaceful()) {
              this.discard(EntityRemoveEvent.Cause.DESPAWN); // CraftBukkit - add Bukkit remove cause
          } else if (!this.isPersistenceRequired() && !this.requiresCustomPersistence()) {
@@ -34,7 +34,7 @@ index c8ff4b01186f924473b9ffde948d7f0573e8d56f..426fa1798087ab1fb4198bd036f49860
              if (entityhuman != null) {
                  double d0 = entityhuman.distanceToSqr((Entity) this);
 diff --git a/src/main/java/net/minecraft/world/entity/animal/horse/SkeletonTrapGoal.java b/src/main/java/net/minecraft/world/entity/animal/horse/SkeletonTrapGoal.java
-index c01d9751828d03f37f36b52d84336bd0ee008e8b..f3a02925833733ae50d706ffc681dd05344a7687 100644
+index 3b7fc11b7832a72fb9b0806fe9847f4e30759e7b..3cb84856c10347162a8736ae1ef65165183ec8fe 100644
 --- a/src/main/java/net/minecraft/world/entity/animal/horse/SkeletonTrapGoal.java
 +++ b/src/main/java/net/minecraft/world/entity/animal/horse/SkeletonTrapGoal.java
 @@ -27,7 +27,7 @@ public class SkeletonTrapGoal extends Goal {
@@ -60,10 +60,10 @@ index 95e9d38dbccbd1c43ababd707e18dfe6779256c1..9ff42b0ae2b82dc3092e38e1439d89b4
              return false;
          }
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Zombie.java b/src/main/java/net/minecraft/world/entity/monster/Zombie.java
-index 8256af275e468a5aa506f0af22428f4082204956..c71d4f91df7ec1cf26888b00fac444bccbbe472e 100644
+index 393a9c704f4637a0e8031328d2a0facef4723dd8..d97c3c139f10a45febc0cfb1057ff6e33266228e 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Zombie.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/Zombie.java
-@@ -322,7 +322,7 @@ public class Zombie extends Monster {
+@@ -328,7 +328,7 @@ public class Zombie extends Monster {
  
                      if (SpawnPlacements.isSpawnPositionOk(entitytypes, this.level(), blockposition) && SpawnPlacements.checkSpawnRules(entitytypes, worldserver, MobSpawnType.REINFORCEMENT, blockposition, this.level().random)) {
                          entityzombie.setPos((double) i1, (double) j1, (double) k1);
@@ -73,13 +73,13 @@ index 8256af275e468a5aa506f0af22428f4082204956..c71d4f91df7ec1cf26888b00fac444bc
                              entityzombie.finalizeSpawn(worldserver, this.level().getCurrentDifficultyAt(entityzombie.blockPosition()), MobSpawnType.REINFORCEMENT, (SpawnGroupData) null);
                              worldserver.addFreshEntityWithPassengers(entityzombie, CreatureSpawnEvent.SpawnReason.REINFORCEMENTS); // CraftBukkit
 diff --git a/src/main/java/net/minecraft/world/entity/player/Player.java b/src/main/java/net/minecraft/world/entity/player/Player.java
-index 7a95aff16a973b7b7d00e8409a252d4a2f6c41bf..a1c5e5913430404838205bc4a04b2afcff9d9046 100644
+index f652859457171759f72800df7a8d5475a0486759..0d1d8ad353ff2f2bd478cfdc2f6bebad5203e190 100644
 --- a/src/main/java/net/minecraft/world/entity/player/Player.java
 +++ b/src/main/java/net/minecraft/world/entity/player/Player.java
-@@ -193,6 +193,7 @@ public abstract class Player extends LivingEntity {
-     @Nullable
+@@ -194,6 +194,7 @@ public abstract class Player extends LivingEntity {
      public Entity currentExplosionCause;
-     public boolean ignoreFallDamageFromCurrentImpulse;
+     private boolean ignoreFallDamageFromCurrentImpulse;
+     private int currentImpulseContextResetGraceTime;
 +    public boolean affectsSpawning = true; // Paper - Affects Spawning API
  
      // CraftBukkit start
@@ -135,10 +135,10 @@ index f38f62e777d88a783e1e3b7e1a48da921cc67cf4..77ae7882a08441d9a80b50492be5e484
          for (Player player : this.players()) {
              if (EntitySelector.NO_SPECTATORS.test(player) && EntitySelector.LIVING_ENTITY_STILL_ALIVE.test(player)) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 34fe109e3ab1e72b278218fad93c2de6b809020c..a078655ad4d51075953c0f0f46ee41d1d76ba1d3 100644
+index 0a4d672adf9684b483964414cc14a58001aca508..96300cb91f734f45ca9bcf8b7a8e727049325144 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-@@ -2402,6 +2402,17 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
+@@ -2424,6 +2424,17 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
          return this.getHandle().language;
      }
  

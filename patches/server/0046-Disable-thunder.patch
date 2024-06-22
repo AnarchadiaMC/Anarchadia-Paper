@@ -5,10 +5,10 @@ Subject: [PATCH] Disable thunder
 
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index c476a49f69261868f74ad528a2ad746aed3094a3..b66b2cc4111073f080620a52883e1b8d6946e768 100644
+index 711318ddc706e72dbd8cea1c541058c881086f21..ff80e95bf91b8f0e60dfc1183dd9fba2dba2719d 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
-@@ -615,7 +615,7 @@ public class ServerLevel extends Level implements WorldGenLevel {
+@@ -616,7 +616,7 @@ public class ServerLevel extends Level implements WorldGenLevel {
          ProfilerFiller gameprofilerfiller = this.getProfiler();
  
          gameprofilerfiller.push("thunder");

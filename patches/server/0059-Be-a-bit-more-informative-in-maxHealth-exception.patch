@@ -5,10 +5,10 @@ Subject: [PATCH] Be a bit more informative in maxHealth exception
 
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftLivingEntity.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftLivingEntity.java
-index 5ba556a9b6b59420abd65b17bea72c8f85a3c70a..c6b41aea86dd6c18b25754fa1ffe4d8ab1dd0f75 100644
+index adeb3b9a3d65d2ef71ea4fd6f0f4679a88d0ba87..e6c68fd9a5fcd374cd7feca081189c9ba9225743 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftLivingEntity.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftLivingEntity.java
-@@ -101,7 +101,12 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
+@@ -102,7 +102,12 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
      @Override
      public void setHealth(double health) {
          health = (float) health;

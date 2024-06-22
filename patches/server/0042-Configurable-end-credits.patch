@@ -5,14 +5,14 @@ Subject: [PATCH] Configurable end credits
 
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 08b2d5c6fb6d236b805ca6556270ad1891b411f5..5b33cc5c54ab38b32f232dae00684d8b1e276acf 100644
+index dc92e1cd0a10ec4e6b4ad6145d5fc0a4ef199365..9f38010f247694e1014c9c93bfcf46d103d8fd20 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-@@ -1107,6 +1107,7 @@ public class ServerPlayer extends Player {
-             this.unRide();
-             this.serverLevel().removePlayerImmediately(this, Entity.RemovalReason.CHANGED_DIMENSION);
-             if (!this.wonGame) {
-+                if (this.level().paperConfig().misc.disableEndCredits) this.seenCredits = true; // Paper - Option to disable end credits
-                 this.wonGame = true;
-                 this.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.WIN_GAME, this.seenCredits ? 0.0F : 1.0F));
-                 this.seenCredits = true;
+@@ -1164,6 +1164,7 @@ public class ServerPlayer extends net.minecraft.world.entity.player.Player {
+         this.unRide();
+         this.serverLevel().removePlayerImmediately(this, Entity.RemovalReason.CHANGED_DIMENSION);
+         if (!this.wonGame) {
++            if (this.level().paperConfig().misc.disableEndCredits) this.seenCredits = true; // Paper - Option to disable end credits
+             this.wonGame = true;
+             this.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.WIN_GAME, 0.0F));
+             this.seenCredits = true;

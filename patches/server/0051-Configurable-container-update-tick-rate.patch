@@ -5,10 +5,10 @@ Subject: [PATCH] Configurable container update tick rate
 
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 29020296e4f3bbddc0faabb1eeaa07a921b5b68f..eb04f9ae48d1122cd08ccdd2798131dd124221df 100644
+index 1115655b1e8090c52840e85b75265da881bbc713..70f0f4daff27754aefcadb84387bb3054cc66a8e 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-@@ -263,6 +263,7 @@ public class ServerPlayer extends Player {
+@@ -267,6 +267,7 @@ public class ServerPlayer extends net.minecraft.world.entity.player.Player {
      public final Object object;
      private int containerCounter;
      public boolean wonGame;
@@ -16,7 +16,7 @@ index 29020296e4f3bbddc0faabb1eeaa07a921b5b68f..eb04f9ae48d1122cd08ccdd2798131dd
  
      // CraftBukkit start
      public CraftPlayer.TransferCookieConnection transferCookieConnection;
-@@ -689,7 +690,12 @@ public class ServerPlayer extends Player {
+@@ -698,7 +699,12 @@ public class ServerPlayer extends net.minecraft.world.entity.player.Player {
              --this.invulnerableTime;
          }
  

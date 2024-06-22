@@ -11,7 +11,7 @@ Co-authored-by: Jake Potrebic <jake.m.potrebic@gmail.com>
 Co-authored-by: masmc05 <masmc05@gmail.com>
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 158779a3590f089c4224b2b128c2e653aef42a94..2caa4c8e250a7925e7d6f9ba00a95956b5328568 100644
+index 708448e071ddb5558658d3096b1d7ee2593ec8c5..7b002d28932e21878dbab248abf85066a8a80a9c 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -1,4 +1,5 @@
@@ -472,7 +472,7 @@ index 0000000000000000000000000000000000000000..790bad0494454ca12ee152e3de6da3da
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index dee319882d7d51a0e03e0f5f31ab6312048e189d..80a20dce63658842a0fa04004b8eaa8af7685fb4 100644
+index c09f3dc29c86fef9edfe7831776a77fc73e52210..6f5b04a59fa1173bfdea2c59a9c13ca3710abb0c 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -43,7 +43,6 @@ import java.util.Set;
@@ -483,7 +483,7 @@ index dee319882d7d51a0e03e0f5f31ab6312048e189d..80a20dce63658842a0fa04004b8eaa8a
  import java.util.concurrent.atomic.AtomicReference;
  import java.util.function.BooleanSupplier;
  import java.util.function.Consumer;
-@@ -185,8 +184,6 @@ import net.minecraft.world.phys.Vec2;
+@@ -191,8 +190,6 @@ import net.minecraft.world.phys.Vec2;
  import net.minecraft.world.phys.Vec3;
  import org.bukkit.Bukkit;
  import org.bukkit.craftbukkit.CraftRegistry;
@@ -492,7 +492,7 @@ index dee319882d7d51a0e03e0f5f31ab6312048e189d..80a20dce63658842a0fa04004b8eaa8a
  import org.bukkit.event.server.ServerLoadEvent;
  // CraftBukkit end
  
-@@ -1680,7 +1677,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1703,7 +1700,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
      @DontObfuscate
      public String getServerModName() {
@@ -502,10 +502,10 @@ index dee319882d7d51a0e03e0f5f31ab6312048e189d..80a20dce63658842a0fa04004b8eaa8a
  
      public SystemReport fillSystemReport(SystemReport details) {
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-index bbe2fabc9251838f232480a04f0a2cf2b49f2812..a6126515e497cb0769bdc96881389026196bbbae 100644
+index b51c3f8c485496734ea58c15377a1215a334c765..48107f8eb50483430053b990496862d71c9f8a3e 100644
 --- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-@@ -214,6 +214,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+@@ -218,6 +218,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
          // Paper end - initialize global and world-defaults configuration
          io.papermc.paper.command.PaperCommands.registerCommands(this); // Paper - setup /paper command
          com.destroystokyo.paper.Metrics.PaperMetrics.startMetrics(); // Paper - start metrics
@@ -529,10 +529,10 @@ index f077b8ff0bf0d96628db3569132696b68fd79921..5f11f5b16766f9d1d5640ae037e259be
              value.append("\n   Plugins: {");
              for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index b32ae5b9c232e5d9b3bd89303db3d2cc6258ea29..4d31fb8bc8bf285720a9d5828325d7124cf41c6e 100644
+index a2f784b28c0d974ee45d61d6a3a0096dd7161d3e..7c97ec4aa57562a8383a40e493eaa8a3697208bb 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -10,8 +10,6 @@ import com.google.common.collect.MapMaker;
+@@ -11,8 +11,6 @@ import com.google.common.collect.MapMaker;
  import com.mojang.authlib.GameProfile;
  import com.mojang.brigadier.StringReader;
  import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -541,7 +541,7 @@ index b32ae5b9c232e5d9b3bd89303db3d2cc6258ea29..4d31fb8bc8bf285720a9d5828325d712
  import com.mojang.serialization.Dynamic;
  import com.mojang.serialization.Lifecycle;
  import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-@@ -26,7 +24,6 @@ import java.net.InetAddress;
+@@ -27,7 +25,6 @@ import java.net.InetAddress;
  import java.util.ArrayList;
  import java.util.Collections;
  import java.util.Date;
@@ -549,7 +549,7 @@ index b32ae5b9c232e5d9b3bd89303db3d2cc6258ea29..4d31fb8bc8bf285720a9d5828325d712
  import java.util.HashSet;
  import java.util.Iterator;
  import java.util.LinkedHashMap;
-@@ -153,7 +150,6 @@ import org.bukkit.craftbukkit.ban.CraftProfileBanList;
+@@ -155,7 +152,6 @@ import org.bukkit.craftbukkit.ban.CraftProfileBanList;
  import org.bukkit.craftbukkit.block.data.CraftBlockData;
  import org.bukkit.craftbukkit.boss.CraftBossBar;
  import org.bukkit.craftbukkit.boss.CraftKeyedBossbar;
@@ -557,7 +557,7 @@ index b32ae5b9c232e5d9b3bd89303db3d2cc6258ea29..4d31fb8bc8bf285720a9d5828325d712
  import org.bukkit.craftbukkit.command.CraftCommandMap;
  import org.bukkit.craftbukkit.command.VanillaCommandWrapper;
  import org.bukkit.craftbukkit.entity.CraftEntityFactory;
-@@ -249,7 +245,6 @@ import org.bukkit.plugin.PluginManager;
+@@ -251,7 +247,6 @@ import org.bukkit.plugin.PluginManager;
  import org.bukkit.plugin.ServicesManager;
  import org.bukkit.plugin.SimplePluginManager;
  import org.bukkit.plugin.SimpleServicesManager;
@@ -565,7 +565,7 @@ index b32ae5b9c232e5d9b3bd89303db3d2cc6258ea29..4d31fb8bc8bf285720a9d5828325d712
  import org.bukkit.plugin.messaging.Messenger;
  import org.bukkit.plugin.messaging.StandardMessenger;
  import org.bukkit.profile.PlayerProfile;
-@@ -266,7 +261,7 @@ import org.yaml.snakeyaml.error.MarkedYAMLException;
+@@ -268,7 +263,7 @@ import org.yaml.snakeyaml.error.MarkedYAMLException;
  import net.md_5.bungee.api.chat.BaseComponent; // Spigot
  
  public final class CraftServer implements Server {
@@ -574,7 +574,7 @@ index b32ae5b9c232e5d9b3bd89303db3d2cc6258ea29..4d31fb8bc8bf285720a9d5828325d712
      private final String serverVersion;
      private final String bukkitVersion = Versioning.getBukkitVersion();
      private final Logger logger = Logger.getLogger("Minecraft");
-@@ -320,7 +315,7 @@ public final class CraftServer implements Server {
+@@ -324,7 +319,7 @@ public final class CraftServer implements Server {
                  return player.getBukkitEntity();
              }
          }));
@@ -583,7 +583,7 @@ index b32ae5b9c232e5d9b3bd89303db3d2cc6258ea29..4d31fb8bc8bf285720a9d5828325d712
          this.structureManager = new CraftStructureManager(console.getStructureManager(), console.registryAccess());
          this.dataPackManager = new CraftDataPackManager(this.getServer().getPackRepository());
          this.serverTickManager = new CraftServerTickManager(console.tickRateManager());
-@@ -573,6 +568,13 @@ public final class CraftServer implements Server {
+@@ -598,6 +593,13 @@ public final class CraftServer implements Server {
          return this.bukkitVersion;
      }
  
@@ -638,10 +638,10 @@ index bc664b090e16ed27ba795c204dc5639679e6eee8..9dc72b01092783c436bc1fa8ce29ff7c
                  net.minecraft.server.Main.main(options);
              } catch (Throwable t) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-index 983660c1cc4df5ec6f08ab7363a1bb5d47af9f19..f541ca7cb3328a9366e08a9933b24ed5c76059c0 100644
+index 99f134d03b76e867a3e5084c5c89e53c74d8e7af..7800e0a5aa381181d6a19d55f90490154de05c04 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-@@ -477,6 +477,11 @@ public final class CraftMagicNumbers implements UnsafeValues {
+@@ -478,6 +478,11 @@ public final class CraftMagicNumbers implements UnsafeValues {
      public String getTimingsServerName() {
          return io.papermc.paper.configuration.GlobalConfiguration.get().timings.serverName;
      }

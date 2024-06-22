@@ -17,10 +17,10 @@ Co-authored-by: Jake Potrebic <jake.m.potrebic@gmail.com>
 Co-authored-by: SoSeDiK <mrsosedik@gmail.com>
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index b700cd5ccf37f3592f7cb931101397fbc59dc60f..ad598e57feb2d9db1b71cb3a432df22212aab9b3 100644
+index 47e1640cafc8087d94d0b88b8b3117591f9f238e..64db7e017b41bffcaac202ee4ecfd7df46d69331 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -1996,7 +1996,7 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+@@ -2013,7 +2013,7 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
          }
          OutgoingChatMessage outgoing = OutgoingChatMessage.create(original);
  
@@ -29,7 +29,7 @@ index b700cd5ccf37f3592f7cb931101397fbc59dc60f..ad598e57feb2d9db1b71cb3a432df222
              this.handleCommand(s);
          } else if (this.player.getChatVisibility() == ChatVisiblity.SYSTEM) {
              // Do nothing, this is coming from a plugin
-@@ -2083,7 +2083,8 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+@@ -2100,7 +2100,8 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
          }
      }
  
@@ -40,10 +40,10 @@ index b700cd5ccf37f3592f7cb931101397fbc59dc60f..ad598e57feb2d9db1b71cb3a432df222
          if ( org.spigotmc.SpigotConfig.logCommands ) // Spigot
          this.LOGGER.info(this.player.getScoreboardName() + " issued server command: " + s);
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 4d31fb8bc8bf285720a9d5828325d7124cf41c6e..2ca22c4d3f15ec3d7c2f8abf68ce7d810fe7c3ea 100644
+index 7c97ec4aa57562a8383a40e493eaa8a3697208bb..78193f0d66c2755ed238824bcd24ced9f9052188 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -900,7 +900,7 @@ public final class CraftServer implements Server {
+@@ -925,7 +925,7 @@ public final class CraftServer implements Server {
      public boolean dispatchCommand(CommandSender sender, String commandLine) {
          Preconditions.checkArgument(sender != null, "sender cannot be null");
          Preconditions.checkArgument(commandLine != null, "commandLine cannot be null");
@@ -53,10 +53,10 @@ index 4d31fb8bc8bf285720a9d5828325d7124cf41c6e..2ca22c4d3f15ec3d7c2f8abf68ce7d81
          if (this.commandMap.dispatch(sender, commandLine)) {
              return true;
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index d76a6d003cdcc1d7489ee359a09e93db96061515..e4be5445045c28e0bf6c84f4b6695ff47f8df72e 100644
+index 4079cf3d515718a18b41333fbdc96d0c8f56648a..5a8597eac762d311ee8e09f64392e41aee1f13bc 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-@@ -544,7 +544,20 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
+@@ -546,7 +546,20 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
  
          if (this.getHandle().connection == null) return;
  

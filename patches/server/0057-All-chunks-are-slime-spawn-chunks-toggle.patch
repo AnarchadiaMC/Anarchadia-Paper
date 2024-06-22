@@ -5,10 +5,10 @@ Subject: [PATCH] All chunks are slime spawn chunks toggle
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Slime.java b/src/main/java/net/minecraft/world/entity/monster/Slime.java
-index 172be1f03f77dcc6d57dd9a9316b303c6f9c7175..136ec2413b6fe4680d7f2e903d04c9984b37f4c0 100644
+index b7e6f6e195d8b947c06e2bf58f4c644bda8eba99..b1f7ea02e533660322675e1bddb070f0a41084f2 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Slime.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/Slime.java
-@@ -342,7 +342,7 @@ public class Slime extends Mob implements Enemy {
+@@ -350,7 +350,7 @@ public class Slime extends Mob implements Enemy {
                  }
  
                  ChunkPos chunkcoordintpair = new ChunkPos(pos);
@@ -18,10 +18,10 @@ index 172be1f03f77dcc6d57dd9a9316b303c6f9c7175..136ec2413b6fe4680d7f2e903d04c998
                  if (random.nextInt(10) == 0 && flag && pos.getY() < 40) {
                      return checkMobSpawnRules(type, world, spawnReason, pos, random);
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftChunk.java b/src/main/java/org/bukkit/craftbukkit/CraftChunk.java
-index ce05946e4fcff7c8151aa1213b18365dab9060f5..1d4587a97e86251982a9df832949a7093b216862 100644
+index 5db1be69f0c4ef6976789587866c7a9bb6d19b0d..e37dae711e7059834612ead5f4fcea9f28ad436f 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftChunk.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftChunk.java
-@@ -217,7 +217,7 @@ public class CraftChunk implements Chunk {
+@@ -218,7 +218,7 @@ public class CraftChunk implements Chunk {
      @Override
      public boolean isSlimeChunk() {
          // 987234911L is deterimined in EntitySlime when seeing if a slime can spawn in a chunk
