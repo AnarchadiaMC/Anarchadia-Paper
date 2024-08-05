@@ -258,11 +258,11 @@ index adb20a9abba33c32d553f620fa82b27dff64ab5f..1f6702b0de00b87dbed7f6d93e911655
 +    // Paper end
  }
 diff --git a/src/main/java/org/bukkit/entity/Cat.java b/src/main/java/org/bukkit/entity/Cat.java
-index d1327761a4b95eba97877f1991fc19b298b48eaf..0534fbc228f64cf3b361ab097d9b88212bdb0f36 100644
+index 117e3e8c63e56247213b2a9cf9908915d4c65665..70cc76f0c1f4ba23bfa78591e8144bbf8d3f0868 100644
 --- a/src/main/java/org/bukkit/entity/Cat.java
 +++ b/src/main/java/org/bukkit/entity/Cat.java
-@@ -68,4 +68,36 @@ public interface Cat extends Tameable, Sittable {
-             return key;
+@@ -94,4 +94,36 @@ public interface Cat extends Tameable, Sittable {
+             return Lists.newArrayList(Registry.CAT_VARIANT).toArray(new Type[0]);
          }
      }
 +
@@ -380,7 +380,7 @@ index c4537080ee1875e984356eee42337a1342f4c9a3..f89edd9c129802f70eac022ff6bf80be
       * Gets the entity's absorption amount.
       *
 diff --git a/src/main/java/org/bukkit/entity/Enderman.java b/src/main/java/org/bukkit/entity/Enderman.java
-index 58191017244f3949f6174fb108e3a245738a53c4..61672c6faf94aa497145aadd634bb10103c7b05a 100644
+index 875817b807c9f515eb07b03cc85d368955388dc3..db01cc952f0a0efd799454d6c86ee4c250e852d8 100644
 --- a/src/main/java/org/bukkit/entity/Enderman.java
 +++ b/src/main/java/org/bukkit/entity/Enderman.java
 @@ -86,4 +86,36 @@ public interface Enderman extends Monster {
@@ -1416,7 +1416,7 @@ index 87a814f63c3f35be35bfa210c9248ad211c0dd8f..14543c2238b45c526dd9aebea2aa5c22
 +    // Paper end
  }
 diff --git a/src/main/java/org/bukkit/entity/ZombieVillager.java b/src/main/java/org/bukkit/entity/ZombieVillager.java
-index 7cc1d9a966454af70b7c25735fe474fe3eb97eb4..ac6fd8ca95771c185c145f4589ddd5b2a6e8c2da 100644
+index e38f38ebfc6e85f29b09c4bb3e2ea79639078ad0..e647c6b933be8234c6ef8726724a7e1198f24f31 100644
 --- a/src/main/java/org/bukkit/entity/ZombieVillager.java
 +++ b/src/main/java/org/bukkit/entity/ZombieVillager.java
 @@ -90,4 +90,22 @@ public interface ZombieVillager extends Zombie {

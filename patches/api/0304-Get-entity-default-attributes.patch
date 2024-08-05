@@ -5,10 +5,10 @@ Subject: [PATCH] Get entity default attributes
 
 
 diff --git a/src/main/java/org/bukkit/UnsafeValues.java b/src/main/java/org/bukkit/UnsafeValues.java
-index 51f1a09164d501de6d2561ed90175f2c24a668c1..cbc63144e5eb35799548209f8fbee70d0c20a53d 100644
+index 07669aad6d9910174fbc8fdf3cdd54211fbfcee3..a25f7378e5cef3899c38dd34d369da0441951f24 100644
 --- a/src/main/java/org/bukkit/UnsafeValues.java
 +++ b/src/main/java/org/bukkit/UnsafeValues.java
-@@ -195,5 +195,22 @@ public interface UnsafeValues {
+@@ -203,5 +203,22 @@ public interface UnsafeValues {
       * @return true if valid repair, false if not
       */
      public boolean isValidRepairItemStack(@org.jetbrains.annotations.NotNull ItemStack itemToBeRepaired, @org.jetbrains.annotations.NotNull ItemStack repairMaterial);

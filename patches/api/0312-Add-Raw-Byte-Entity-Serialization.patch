@@ -5,10 +5,10 @@ Subject: [PATCH] Add Raw Byte Entity Serialization
 
 
 diff --git a/src/main/java/org/bukkit/UnsafeValues.java b/src/main/java/org/bukkit/UnsafeValues.java
-index cbc63144e5eb35799548209f8fbee70d0c20a53d..240ac3f658ed24d3980707e146e6dfee6c9b31a0 100644
+index a25f7378e5cef3899c38dd34d369da0441951f24..3aeac7b102f7c6e6186d168294ea73ff022f9349 100644
 --- a/src/main/java/org/bukkit/UnsafeValues.java
 +++ b/src/main/java/org/bukkit/UnsafeValues.java
-@@ -167,6 +167,14 @@ public interface UnsafeValues {
+@@ -175,6 +175,14 @@ public interface UnsafeValues {
  
      ItemStack deserializeItem(byte[] data);
  

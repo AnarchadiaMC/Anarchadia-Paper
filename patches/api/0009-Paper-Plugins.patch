@@ -5,7 +5,7 @@ Subject: [PATCH] Paper Plugins
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index a0c6f2c36fa4c16787616a79b5d996523c274fe0..effad8017bff46e2651af01f1789cb8dd08a49d5 100644
+index ed0b67ac322aa22b191cd35502ae5b4f20af19f8..258d7010d24c529c9bbc76cc26adf226c641ee58 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -52,7 +52,7 @@ dependencies {
@@ -17,7 +17,7 @@ index a0c6f2c36fa4c16787616a79b5d996523c274fe0..effad8017bff46e2651af01f1789cb8d
      compileOnly("org.apache.maven.resolver:maven-resolver-connector-basic:1.9.18")
      compileOnly("org.apache.maven.resolver:maven-resolver-transport-http:1.9.18")
  
-@@ -138,6 +138,7 @@ tasks.withType<Javadoc> {
+@@ -139,6 +139,7 @@ tasks.withType<Javadoc> {
          "https://jd.advntr.dev/text-serializer-plain/$adventureVersion/",
          "https://jd.advntr.dev/text-logger-slf4j/$adventureVersion/",
          // Paper end
@@ -204,7 +204,7 @@ index 0000000000000000000000000000000000000000..cdbc93b317b3bab47bf6552c29cfbb2c
 +}
 diff --git a/src/main/java/io/papermc/paper/plugin/bootstrap/BootstrapContext.java b/src/main/java/io/papermc/paper/plugin/bootstrap/BootstrapContext.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..08f2050356acaf74e3210416760e3873c2dafd2c
+index 0000000000000000000000000000000000000000..70d5f9802f90605a5120ff2a000a2e9395f0aecc
 --- /dev/null
 +++ b/src/main/java/io/papermc/paper/plugin/bootstrap/BootstrapContext.java
 @@ -0,0 +1,14 @@
@@ -215,7 +215,7 @@ index 0000000000000000000000000000000000000000..08f2050356acaf74e3210416760e3873
 +/**
 + * Represents the context provided to a {@link PluginBootstrap} during both the bootstrapping and plugin
 + * instantiation logic.
-+ * A boostrap context may be used to access data or logic usually provided to {@link org.bukkit.plugin.Plugin} instances
++ * A bootstrap context may be used to access data or logic usually provided to {@link org.bukkit.plugin.Plugin} instances
 + * like the plugin's configuration or logger during the plugins bootstrap.
 + */
 +@ApiStatus.Experimental
@@ -224,7 +224,7 @@ index 0000000000000000000000000000000000000000..08f2050356acaf74e3210416760e3873
 +}
 diff --git a/src/main/java/io/papermc/paper/plugin/bootstrap/PluginBootstrap.java b/src/main/java/io/papermc/paper/plugin/bootstrap/PluginBootstrap.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..288c078da3d3ca78d02caa4e3565ac7cf89f9f9f
+index 0000000000000000000000000000000000000000..81e09abd2128d8cc54d1fd6454aea7d8d287a11f
 --- /dev/null
 +++ b/src/main/java/io/papermc/paper/plugin/bootstrap/PluginBootstrap.java
 @@ -0,0 +1,41 @@
@@ -236,7 +236,7 @@ index 0000000000000000000000000000000000000000..288c078da3d3ca78d02caa4e3565ac7c
 +import org.jetbrains.annotations.NotNull;
 +
 +/**
-+ * A plugin boostrap is meant for loading certain parts of the plugin before the server is loaded.
++ * A plugin bootstrap is meant for loading certain parts of the plugin before the server is loaded.
 + * <p>
 + * Plugin bootstrapping allows values to be initialized in certain parts of the server that might not be allowed
 + * when the server is running.
@@ -271,7 +271,7 @@ index 0000000000000000000000000000000000000000..288c078da3d3ca78d02caa4e3565ac7c
 +}
 diff --git a/src/main/java/io/papermc/paper/plugin/bootstrap/PluginProviderContext.java b/src/main/java/io/papermc/paper/plugin/bootstrap/PluginProviderContext.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..2c14693155de3654d5ca011c63e13e4a1abf2080
+index 0000000000000000000000000000000000000000..c1ce2a8bdf2e3bd9ad2fc7f32fba46282bea5d1a
 --- /dev/null
 +++ b/src/main/java/io/papermc/paper/plugin/bootstrap/PluginProviderContext.java
 @@ -0,0 +1,52 @@
@@ -287,7 +287,7 @@ index 0000000000000000000000000000000000000000..2c14693155de3654d5ca011c63e13e4a
 +/**
 + * Represents the context provided to a {@link PluginBootstrap} during both the bootstrapping and plugin
 + * instantiation logic.
-+ * A boostrap context may be used to access data or logic usually provided to {@link org.bukkit.plugin.Plugin} instances
++ * A bootstrap context may be used to access data or logic usually provided to {@link org.bukkit.plugin.Plugin} instances
 + * like the plugin's configuration or logger during the plugins bootstrap.
 + */
 +@ApiStatus.NonExtendable
@@ -1347,10 +1347,10 @@ index 0000000000000000000000000000000000000000..6bf3d212a6156ad9ab0e82d1ca0a04f8
 +
 +}
 diff --git a/src/main/java/org/bukkit/UnsafeValues.java b/src/main/java/org/bukkit/UnsafeValues.java
-index baf49da3dd46039da2f24a4af8b1b8617bb25501..7cf61228754527ddaa6b39b5f1426e0527cdaac9 100644
+index 9ba1a4e838538ecd55f4f8e50ffb0c5f1f474382..d8b346fe0f9634218954fe818d53272a0896af9c 100644
 --- a/src/main/java/org/bukkit/UnsafeValues.java
 +++ b/src/main/java/org/bukkit/UnsafeValues.java
-@@ -137,4 +137,14 @@ public interface UnsafeValues {
+@@ -141,4 +141,14 @@ public interface UnsafeValues {
  
      @ApiStatus.Internal
      <B extends Keyed> B get(Registry<B> registry, NamespacedKey key);

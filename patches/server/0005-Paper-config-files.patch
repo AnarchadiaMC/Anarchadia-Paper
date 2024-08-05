@@ -487,15 +487,16 @@ index 0000000000000000000000000000000000000000..d9502ba028a96f9cc846f9ed428bd806
 +}
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..7045040681e639f36fefcf2735f67367d5e3cbc4
+index 0000000000000000000000000000000000000000..e727414d784debd276dcc42aabf588d6fcbccc91
 --- /dev/null
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-@@ -0,0 +1,313 @@
+@@ -0,0 +1,323 @@
 +package io.papermc.paper.configuration;
 +
 +import co.aikar.timings.MinecraftTimings;
 +import com.mojang.logging.LogUtils;
 +import io.papermc.paper.configuration.constraint.Constraints;
++import io.papermc.paper.configuration.type.number.DoubleOr;
 +import io.papermc.paper.configuration.type.number.IntOr;
 +import net.kyori.adventure.text.Component;
 +import net.kyori.adventure.text.format.NamedTextColor;
@@ -544,12 +545,19 @@ index 0000000000000000000000000000000000000000..7045040681e639f36fefcf2735f67367
 +        public boolean useDisplayNameInQuitMessage = false;
 +    }
 +
++    public Spark spark;
++
++    public class Spark extends ConfigurationPart {
++        public boolean enabled = true;
++        public boolean enableImmediately = false;
++    }
++
 +    @Deprecated(forRemoval = true)
 +    public Timings timings;
 +
 +    @Deprecated(forRemoval = true)
 +    public class Timings extends ConfigurationPart {
-+        public boolean enabled = true;
++        public boolean enabled = false;
 +        public boolean verbose = true;
 +        public String url = "https://timings.aikar.co/";
 +        public boolean serverNamePrivacy = false;
@@ -793,6 +801,8 @@ index 0000000000000000000000000000000000000000..7045040681e639f36fefcf2735f67367
 +        public boolean useDimensionTypeForCustomSpawners = false;
 +        public boolean strictAdvancementDimensionCheck = false;
 +        public IntOr.Default compressionLevel = IntOr.Default.USE_DEFAULT;
++        @Comment("Defines the leniency distance added on the server to the interaction range of a player when validating interact packets.")
++        public DoubleOr.Default clientInteractionLeniencyDistance = DoubleOr.Default.USE_DEFAULT;
 +    }
 +
 +    public BlockUpdates blockUpdates;
@@ -844,10 +854,10 @@ index 0000000000000000000000000000000000000000..69add4a7f1147015806bc9b63a8340d1
 +}
 diff --git a/src/main/java/io/papermc/paper/configuration/PaperConfigurations.java b/src/main/java/io/papermc/paper/configuration/PaperConfigurations.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..83a726bcf8b7dce73a361b0d79dbd63a0afc7a12
+index 0000000000000000000000000000000000000000..783eac6e458c6f1a0584301fb84a2fe341868f34
 --- /dev/null
 +++ b/src/main/java/io/papermc/paper/configuration/PaperConfigurations.java
-@@ -0,0 +1,465 @@
+@@ -0,0 +1,466 @@
 +package io.papermc.paper.configuration;
 +
 +import com.google.common.base.Suppliers;
@@ -1043,6 +1053,7 @@ index 0000000000000000000000000000000000000000..83a726bcf8b7dce73a361b0d79dbd63a
 +            .serializers(builder -> builder
 +                .register(new PacketClassSerializer())
 +                .register(IntOr.Default.SERIALIZER)
++                .register(DoubleOr.Default.SERIALIZER)
 +            );
 +    }
 +
@@ -5042,10 +5053,10 @@ index e433037a03ffafabb952887ae3980e1d51411d4c..c061813d275fbc48d7629cc59d90dbb4
          this.world = new CraftWorld((ServerLevel) this, gen, biomeProvider, env);
  
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 6d1d3f9cf7451494af7c57d8bb1cd0ed25ea63e2..f1302dfb68bf8e4e1f4d8b084ad81422f65eecc4 100644
+index e8fac2863c5feb875cf0c78f062b4b87acbcb49b..751900e0c2a946ba4291174c81b2bdbdbe994e94 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -954,6 +954,7 @@ public final class CraftServer implements Server {
+@@ -962,6 +962,7 @@ public final class CraftServer implements Server {
          }
  
          org.spigotmc.SpigotConfig.init((File) this.console.options.valueOf("spigot-settings")); // Spigot
@@ -5054,7 +5065,7 @@ index 6d1d3f9cf7451494af7c57d8bb1cd0ed25ea63e2..f1302dfb68bf8e4e1f4d8b084ad81422
              world.serverLevelData.setDifficulty(config.difficulty);
              world.setSpawnSettings(config.spawnMonsters, config.spawnAnimals);
 diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
-index 4b8602b168f9dd386aa72b4e5d189c441c93542e..1e3ca7ca98abfd5be233a7eeb6dad201776d2d6a 100644
+index a07e26caf48acf9ef193a74497a201166bfbe098..dbcde37cfdeb6141c3f5c4f8b95d60fca91c7977 100644
 --- a/src/main/java/org/bukkit/craftbukkit/Main.java
 +++ b/src/main/java/org/bukkit/craftbukkit/Main.java
 @@ -142,6 +142,19 @@ public class Main {
@@ -5078,7 +5089,7 @@ index 4b8602b168f9dd386aa72b4e5d189c441c93542e..1e3ca7ca98abfd5be233a7eeb6dad201
          };
  
 diff --git a/src/main/java/org/spigotmc/SpigotConfig.java b/src/main/java/org/spigotmc/SpigotConfig.java
-index 192b6fbd34b9b90112f869ae6e367ab9ba5a5906..08b0ca7b68bf238366f4d6904478852ecbe9394a 100644
+index 038fd72710b3084c17d52d4cce087a5bd0aa3a01..e42677a14ec8e1a42747603fb4112822e326fb70 100644
 --- a/src/main/java/org/spigotmc/SpigotConfig.java
 +++ b/src/main/java/org/spigotmc/SpigotConfig.java
 @@ -96,7 +96,7 @@ public class SpigotConfig
@@ -5091,7 +5102,7 @@ index 192b6fbd34b9b90112f869ae6e367ab9ba5a5906..08b0ca7b68bf238366f4d6904478852e
          for ( Method method : clazz.getDeclaredMethods() )
          {
 diff --git a/src/main/java/org/spigotmc/SpigotWorldConfig.java b/src/main/java/org/spigotmc/SpigotWorldConfig.java
-index a6d2ce801b236b046b94913bccf7eccfc561f35a..b244b65799d9c082b8b1639bad15727442e63168 100644
+index a6d2ce801b236b046b94913bccf7eccfc561f35a..8bc7a9da0eb345e65f42461e2fb22731eb80790a 100644
 --- a/src/main/java/org/spigotmc/SpigotWorldConfig.java
 +++ b/src/main/java/org/spigotmc/SpigotWorldConfig.java
 @@ -58,8 +58,14 @@ public class SpigotWorldConfig
@@ -5111,6 +5122,47 @@ index a6d2ce801b236b046b94913bccf7eccfc561f35a..b244b65799d9c082b8b1639bad157274
      }
  
      public <T> List getList(String path, T def)
+@@ -138,14 +144,14 @@ public class SpigotWorldConfig
+     public double itemMerge;
+     private void itemMerge()
+     {
+-        this.itemMerge = this.getDouble("merge-radius.item", 2.5 );
++        this.itemMerge = this.getDouble("merge-radius.item", 0.5 );
+         this.log( "Item Merge Radius: " + this.itemMerge );
+     }
+ 
+     public double expMerge;
+     private void expMerge()
+     {
+-        this.expMerge = this.getDouble("merge-radius.exp", 3.0 );
++        this.expMerge = this.getDouble("merge-radius.exp", -1 );
+         this.log( "Experience Merge Radius: " + this.expMerge );
+     }
+ 
+@@ -197,7 +203,7 @@ public class SpigotWorldConfig
+ 
+     public int animalActivationRange = 32;
+     public int monsterActivationRange = 32;
+-    public int raiderActivationRange = 48;
++    public int raiderActivationRange = 64;
+     public int miscActivationRange = 16;
+     public boolean tickInactiveVillagers = true;
+     public boolean ignoreSpectatorActivation = false;
+@@ -212,10 +218,10 @@ public class SpigotWorldConfig
+         this.log( "Entity Activation Range: An " + this.animalActivationRange + " / Mo " + this.monsterActivationRange + " / Ra " + this.raiderActivationRange + " / Mi " + this.miscActivationRange + " / Tiv " + this.tickInactiveVillagers + " / Isa " + this.ignoreSpectatorActivation );
+     }
+ 
+-    public int playerTrackingRange = 48;
+-    public int animalTrackingRange = 48;
+-    public int monsterTrackingRange = 48;
+-    public int miscTrackingRange = 32;
++    public int playerTrackingRange = 128;
++    public int animalTrackingRange = 96;
++    public int monsterTrackingRange = 96;
++    public int miscTrackingRange = 96;
+     public int displayTrackingRange = 128;
+     public int otherTrackingRange = 64;
+     private void trackingRange()
 diff --git a/src/test/java/io/papermc/paper/configuration/GlobalConfigTestingBase.java b/src/test/java/io/papermc/paper/configuration/GlobalConfigTestingBase.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..0396589795da1f83ddf62426236dde9a3afa1376

@@ -420,27 +420,27 @@ index d248069adfc67eb840951f7ab4a1fa5d30214dec..976f701ed9b9873945a5628173c580e2
       * Gets if this EntityType is enabled by feature in a world.
       *
 diff --git a/src/main/java/org/bukkit/entity/Villager.java b/src/main/java/org/bukkit/entity/Villager.java
-index d841d94d46462e0ceb7c6b04cc8fc36792bd9201..8c8176121cafed0ed09239b6a7b392dc846438e2 100644
+index d839630d7b2e51629e52edf24e7c6dd86b5f58f6..0759f66986cec2c7e3f765aaa5b1654b5ed9f4b5 100644
 --- a/src/main/java/org/bukkit/entity/Villager.java
 +++ b/src/main/java/org/bukkit/entity/Villager.java
-@@ -160,7 +160,7 @@ public interface Villager extends AbstractVillager {
+@@ -185,7 +185,7 @@ public interface Villager extends AbstractVillager {
       * Represents the various different Villager professions there may be.
       * Villagers have different trading options depending on their profession,
       */
--    public enum Profession implements Keyed {
-+    public enum Profession implements Keyed, net.kyori.adventure.translation.Translatable { // Paper
-         NONE,
+-    interface Profession extends OldEnum<Profession>, Keyed {
++    interface Profession extends OldEnum<Profession>, Keyed, net.kyori.adventure.translation.Translatable {
+ 
+         Profession NONE = getProfession("none");
          /**
-          * Armorer profession. Wears a black apron. Armorers primarily trade for
-@@ -243,6 +243,13 @@ public interface Villager extends AbstractVillager {
-         public NamespacedKey getKey() {
-             return key;
+@@ -290,6 +290,13 @@ public interface Villager extends AbstractVillager {
+         static Profession[] values() {
+             return Lists.newArrayList(Registry.VILLAGER_PROFESSION).toArray(new Profession[0]);
          }
 +
 +        // Paper start
 +        @Override
-+        public @NotNull String translationKey() {
-+            return "entity.minecraft.villager." + this.key.getKey();
++        default @NotNull String translationKey() {
++            return "entity.minecraft.villager." + this.getKey().getKey();
 +        }
 +        // Paper end
      }
@@ -526,7 +526,7 @@ index 5bd252c0ae3b09fe141d131360c67bb9bfbf5422..78587d9fabe6371a23a7963917b054db
 +
  }
 diff --git a/src/main/java/org/bukkit/inventory/ItemStack.java b/src/main/java/org/bukkit/inventory/ItemStack.java
-index abdb3b5d3bc96fc48ee53208f77ae0f9c295d771..03f50bcf60ce868d633912e53e804a2b25999f6e 100644
+index 4b4c364dad70126dee17aabca2c3da9f148dd6d0..ef36a696f2f926d70c5d93ce08f75fa9a749e32f 100644
 --- a/src/main/java/org/bukkit/inventory/ItemStack.java
 +++ b/src/main/java/org/bukkit/inventory/ItemStack.java
 @@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;

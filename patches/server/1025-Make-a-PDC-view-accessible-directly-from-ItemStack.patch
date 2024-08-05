@@ -97,10 +97,10 @@ index 0000000000000000000000000000000000000000..fac401280d3f3689b00e16c19155ca75
 +    }
 +}
 diff --git a/src/main/java/org/bukkit/craftbukkit/inventory/CraftItemStack.java b/src/main/java/org/bukkit/craftbukkit/inventory/CraftItemStack.java
-index 814e8ece6821e359b504e8c4d140cc38700f2abe..32a41c8b324aad67b9dcf74387aef299e6478a64 100644
+index f4c7b0e2db55ad9cdf09da80f6756f941315fb30..40fb5b5e00f6bc82e67d318b8b3d1e7606973f52 100644
 --- a/src/main/java/org/bukkit/craftbukkit/inventory/CraftItemStack.java
 +++ b/src/main/java/org/bukkit/craftbukkit/inventory/CraftItemStack.java
-@@ -480,4 +480,63 @@ public final class CraftItemStack extends ItemStack {
+@@ -484,4 +484,63 @@ public final class CraftItemStack extends ItemStack {
          return mirrored;
      }
      // Paper end

@@ -6,10 +6,10 @@ Subject: [PATCH] Expose the Entity Counter to allow plugins to use valid and
 
 
 diff --git a/src/main/java/org/bukkit/UnsafeValues.java b/src/main/java/org/bukkit/UnsafeValues.java
-index cb7aef53cbffc76dea9fec28445ea8aefcb29d62..fb1efc7dfcfbfb823c8ad8fe2943adb99104aefe 100644
+index e41d5d9b810c8816cd0d1eba5fd1ea56252fb0df..64be4e60a03cb7cdc21013837d241d288695b69d 100644
 --- a/src/main/java/org/bukkit/UnsafeValues.java
 +++ b/src/main/java/org/bukkit/UnsafeValues.java
-@@ -166,5 +166,12 @@ public interface UnsafeValues {
+@@ -174,5 +174,12 @@ public interface UnsafeValues {
      byte[] serializeItem(ItemStack item);
  
      ItemStack deserializeItem(byte[] data);

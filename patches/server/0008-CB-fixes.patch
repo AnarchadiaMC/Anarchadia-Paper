@@ -6,6 +6,8 @@ Subject: [PATCH] CB fixes
 * Missing Level -> LevelStem generic in StructureCheck
   Need to use the right for injectDatafixingContext (Spottedleaf)
 
+* Fix summon_entity effect attempting to add incorrect entity (granny)
+
 * Removed incorrect parent perm for `minecraft.debugstick.always` (Machine_Maker)
 
 * Fixed method signature of Marker#addPassenger (Machine_Maker)
@@ -29,6 +31,19 @@ index a696a0d168987aaa4e59c471a23eeb48d683c1b2..9d11fcb3df12182ae00ce73f7e30091f
          this.structureManager = new StructureManager(this, this.serverLevelData.worldGenOptions(), this.structureCheck); // CraftBukkit
          if ((this.dimension() == Level.END && this.dimensionTypeRegistration().is(BuiltinDimensionTypes.END)) || env == org.bukkit.World.Environment.THE_END) { // CraftBukkit - Allow to create EnderDragonBattle in default and custom END
              this.dragonFight = new EndDragonFight(this, this.serverLevelData.worldGenOptions().seed(), this.serverLevelData.endDragonFightData()); // CraftBukkit
+diff --git a/src/main/java/net/minecraft/world/item/enchantment/effects/SummonEntityEffect.java b/src/main/java/net/minecraft/world/item/enchantment/effects/SummonEntityEffect.java
+index d927357d541cf206bb3019b2fda3473a77b44ec4..4601c7069ba82ccfe87e9dc304b6f3262f7bbfbf 100644
+--- a/src/main/java/net/minecraft/world/item/enchantment/effects/SummonEntityEffect.java
++++ b/src/main/java/net/minecraft/world/item/enchantment/effects/SummonEntityEffect.java
+@@ -54,7 +54,7 @@ public record SummonEntityEffect(HolderSet<EntityType<?>> entityTypes, boolean j
+                         // CraftBukkit start
+                         world.strikeLightning(entity1, (context.itemStack().getItem() == Items.TRIDENT) ? LightningStrikeEvent.Cause.TRIDENT : LightningStrikeEvent.Cause.ENCHANTMENT);
+                     } else {
+-                        world.addFreshEntityWithPassengers(user, CreatureSpawnEvent.SpawnReason.ENCHANTMENT);
++                        world.addFreshEntityWithPassengers(entity1, CreatureSpawnEvent.SpawnReason.ENCHANTMENT); // Paper - Fix typo when adding summoned entity
+                         // CraftBukkit end
+                     }
+ 
 diff --git a/src/main/java/net/minecraft/world/level/levelgen/structure/StructureCheck.java b/src/main/java/net/minecraft/world/level/levelgen/structure/StructureCheck.java
 index 0dc7f88877020bddd5a84db51d349f52b673048e..aae73586265593ee7830fb8dd5c2e3d7560057f0 100644
 --- a/src/main/java/net/minecraft/world/level/levelgen/structure/StructureCheck.java
@@ -68,10 +83,10 @@ index 85c7f3027978b1d7d6c31b7ad21b3377cdda5925..e34deaf398dc6722c3128bdd6b9bc16d
 +    // Paper end
  }
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index f1302dfb68bf8e4e1f4d8b084ad81422f65eecc4..fe0f57dbeecc4b5a0c81863f33e41d11eb60943a 100644
+index 751900e0c2a946ba4291174c81b2bdbdbe994e94..f04c0f8b3905b488aac221fedde335a54ad1ff58 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -2514,7 +2514,13 @@ public final class CraftServer implements Server {
+@@ -2522,7 +2522,13 @@ public final class CraftServer implements Server {
          Preconditions.checkArgument(key != null, "NamespacedKey key cannot be null");
  
          ReloadableServerRegistries.Holder registry = this.getServer().reloadableRegistries();
@@ -87,7 +102,7 @@ index f1302dfb68bf8e4e1f4d8b084ad81422f65eecc4..fe0f57dbeecc4b5a0c81863f33e41d11
  
      @Override
 diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
-index 1e3ca7ca98abfd5be233a7eeb6dad201776d2d6a..9ec50bbb262b25fea157ae48e8395f5cd38f8906 100644
+index dbcde37cfdeb6141c3f5c4f8b95d60fca91c7977..2122d7316f55ab5bec7058fe1b8ee3ceb42deea7 100644
 --- a/src/main/java/org/bukkit/craftbukkit/Main.java
 +++ b/src/main/java/org/bukkit/craftbukkit/Main.java
 @@ -123,6 +123,7 @@ public class Main {
@@ -119,10 +134,10 @@ index 905adf97c0d1f0d1c774a6835a5dffcfea884e58..c017ce2ca1bc535795c958a2e509af2a
  public class CraftScheduler implements BukkitScheduler {
  
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-index 4c3c9c0e01ba8eeb9bd3f31cd795445cf03f8278..e08d4a45e313ef1b9005ef00ee0185a188171207 100644
+index cfb4cf66aa5f32a96a15886c6cf4a3946bd232ec..aa6a9dcd5528df38dddc0c661334c35658a19cee 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-@@ -244,7 +244,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
+@@ -240,7 +240,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
          try {
              nmsStack.applyComponents(new ItemParser(Commands.createValidationContext(MinecraftServer.getDefaultRegistryAccess())).parse(new StringReader(arguments)).components());
          } catch (CommandSyntaxException ex) {
