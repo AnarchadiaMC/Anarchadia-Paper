@@ -1,0 +1,20 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: AnarchadiaMC <166779226+AnarchadiaMC@users.noreply.github.com>
+Date: Mon, 5 Aug 2024 17:09:54 -0500
+Subject: [PATCH] Remove flight check
+
+
+diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index 624b80c796e9c95040d71d1595d11f98e2899cf3..34d52d3200d357ab683132d2f5292ef91c13fde4 100644
+--- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -1541,8 +1541,7 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+                                 this.player.absMoveTo(d0, d1, d2, f, f1);
+                                 boolean flag4 = this.player.isAutoSpinAttack();
+ 
+-                                this.clientIsFloating = d11 >= -0.03125D && !flag2 && this.player.gameMode.getGameModeForPlayer() != GameType.SPECTATOR && !this.server.isFlightAllowed() && !this.player.getAbilities().mayfly && !this.player.hasEffect(MobEffects.LEVITATION) && !flag && !flag4 && this.noBlocksAround(this.player);
+-                                this.player.serverLevel().getChunkSource().move(this.player);
++                                this.clientIsFloating = false; // Anarchadia - Remove flight check. //d11 >= -0.03125D && !flag2 && this.player.gameMode.getGameModeForPlayer() != GameType.SPECTATOR && !this.server.isFlightAllowed() && !this.player.getAbilities().mayfly && !this.player.hasEffect(MobEffects.LEVITATION) && !flag && !flag4 && this.noBlocksAround(this.player);                                this.player.serverLevel().getChunkSource().move(this.player);
+                                 Vec3 vec3d = new Vec3(this.player.getX() - d3, this.player.getY() - d4, this.player.getZ() - d5);
+ 
+                                 this.player.setOnGroundWithMovement(packet.isOnGround(), vec3d);
