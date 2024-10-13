@@ -96,23 +96,24 @@ index 0000000000000000000000000000000000000000..f29e76a6b66ddfec12ddf8db6dcb2df6
 +}
 diff --git a/src/main/java/io/papermc/paper/registry/RegistryAccess.java b/src/main/java/io/papermc/paper/registry/RegistryAccess.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..86ab67ff5023bf6adea80b02648b6f67476e30e5
+index 0000000000000000000000000000000000000000..00a3a4a196808b4b5c84ecccbfb1ea0e3825146a
 --- /dev/null
 +++ b/src/main/java/io/papermc/paper/registry/RegistryAccess.java
-@@ -0,0 +1,49 @@
+@@ -0,0 +1,50 @@
 +package io.papermc.paper.registry;
 +
 +import org.bukkit.Keyed;
 +import org.bukkit.Registry;
 +import org.jetbrains.annotations.ApiStatus;
-+import org.jetbrains.annotations.NotNull;
-+import org.jetbrains.annotations.Nullable;
++import org.jspecify.annotations.NullMarked;
++import org.jspecify.annotations.Nullable;
 +
 +/**
 + * Used for accessing different {@link Registry} instances
 + * by a {@link RegistryKey}. Get the main instance of {@link RegistryAccess}
 + * with {@link RegistryAccess#registryAccess()}.
 + */
++@NullMarked
 +@ApiStatus.NonExtendable
 +public interface RegistryAccess {
 +
@@ -121,7 +122,7 @@ index 0000000000000000000000000000000000000000..86ab67ff5023bf6adea80b02648b6f67
 +     *
 +     * @return the RegistryAccess instance
 +     */
-+    static @NotNull RegistryAccess registryAccess() {
++    static RegistryAccess registryAccess() {
 +        return RegistryAccessHolder.INSTANCE.orElseThrow(() -> new IllegalStateException("No RegistryAccess implementation found"));
 +    }
 +
@@ -134,7 +135,7 @@ index 0000000000000000000000000000000000000000..86ab67ff5023bf6adea80b02648b6f67
 +     * @deprecated use {@link #getRegistry(RegistryKey)} with keys from {@link RegistryKey}
 +     */
 +    @Deprecated(since = "1.20.6", forRemoval = true)
-+    <T extends Keyed> @Nullable Registry<T> getRegistry(@NotNull Class<T> type);
++    <T extends Keyed> @Nullable Registry<T> getRegistry(Class<T> type);
 +
 +    /**
 +     * Gets the registry with the specified key.
@@ -147,7 +148,7 @@ index 0000000000000000000000000000000000000000..86ab67ff5023bf6adea80b02648b6f67
 +     */
 +    // Future note: We should have no trouble removing this generic qualifier when
 +    // registry types no longer have to be "keyed" as it shouldn't break ABI or API.
-+    <T extends Keyed> @NotNull Registry<T> getRegistry(@NotNull RegistryKey<T> registryKey);
++    <T extends Keyed> Registry<T> getRegistry(RegistryKey<T> registryKey);
 +}
 diff --git a/src/main/java/io/papermc/paper/registry/RegistryAccessHolder.java b/src/main/java/io/papermc/paper/registry/RegistryAccessHolder.java
 new file mode 100644
@@ -168,16 +169,16 @@ index 0000000000000000000000000000000000000000..b89e19c070f97c9662f1e16309446494
 +    }
 +}
 diff --git a/src/main/java/io/papermc/paper/registry/RegistryKeyImpl.java b/src/main/java/io/papermc/paper/registry/RegistryKeyImpl.java
-index 791813220b2504214b1adecc69093cd600fb0f8c..47fe5b0d5d031110c27210a0a256c260b35d9ba1 100644
+index 80e3e64f47ac55a4978c9e5b430e2f2d1c871d1b..ac68dfce754dc7e014bb31bba32d9b246ffd411c 100644
 --- a/src/main/java/io/papermc/paper/registry/RegistryKeyImpl.java
 +++ b/src/main/java/io/papermc/paper/registry/RegistryKeyImpl.java
-@@ -10,6 +10,17 @@ record RegistryKeyImpl<T>(@NotNull Key key) implements RegistryKey<T> {
+@@ -12,6 +12,17 @@ record RegistryKeyImpl<T>(Key key) implements RegistryKey<T> {
  
      static final Set<RegistryKey<?>> REGISTRY_KEYS = Sets.newIdentityHashSet();
  
 +    // override equals and hashCode to this can be used to simulate an "identity" hashmap
 +    @Override
-+    public boolean equals(final Object obj) {
++    public boolean equals(final @Nullable Object obj) {
 +        return obj == this;
 +    }
 +
@@ -206,10 +207,10 @@ index e0f652117e585882693736de8165ae9c689e1d68..fbe14c327ee9c1ac07893853ca7c699e
          return server.getRegistry(tClass);
      }
 diff --git a/src/main/java/org/bukkit/Registry.java b/src/main/java/org/bukkit/Registry.java
-index e9edc8c17cbd29cfdad31df13acb15bab2304735..d855e703339e6f6e50fcb19e8954a9434e718b2f 100644
+index fbede496b05c4b9b1ecd12e711a100586776d469..3777f9c92d0c183d0ab5e28bbe73f2125babf61c 100644
 --- a/src/main/java/org/bukkit/Registry.java
 +++ b/src/main/java/org/bukkit/Registry.java
-@@ -87,8 +87,10 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
+@@ -88,8 +88,10 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
       * Server banner patterns.
       *
       * @see PatternType
@@ -221,7 +222,7 @@ index e9edc8c17cbd29cfdad31df13acb15bab2304735..d855e703339e6f6e50fcb19e8954a943
      /**
       * Server biomes.
       *
-@@ -102,7 +104,7 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
+@@ -103,7 +105,7 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
       * @apiNote BlockType is not ready for public usage yet
       */
      @ApiStatus.Internal
@@ -230,7 +231,7 @@ index e9edc8c17cbd29cfdad31df13acb15bab2304735..d855e703339e6f6e50fcb19e8954a943
      /**
       * Custom boss bars.
       *
-@@ -134,13 +136,15 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
+@@ -135,13 +137,15 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
       *
       * @see Cat.Type
       */
@@ -248,7 +249,7 @@ index e9edc8c17cbd29cfdad31df13acb15bab2304735..d855e703339e6f6e50fcb19e8954a943
      /**
       * Server entity types.
       *
-@@ -152,7 +156,7 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
+@@ -153,7 +157,7 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
       *
       * @see MusicInstrument
       */
@@ -257,7 +258,7 @@ index e9edc8c17cbd29cfdad31df13acb15bab2304735..d855e703339e6f6e50fcb19e8954a943
      /**
       * Server item types.
       *
-@@ -160,7 +164,7 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
+@@ -161,7 +165,7 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
       * @apiNote ItemType is not ready for public usage yet
       */
      @ApiStatus.Internal
@@ -266,7 +267,14 @@ index e9edc8c17cbd29cfdad31df13acb15bab2304735..d855e703339e6f6e50fcb19e8954a943
      /**
       * Default server loot tables.
       *
-@@ -178,7 +182,7 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
+@@ -180,13 +184,13 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
+      * @see MenuType
+      */
+     @ApiStatus.Experimental
+-    Registry<MenuType> MENU = Objects.requireNonNull(Bukkit.getRegistry(MenuType.class), "No registry present for MenuType. This is a bug.");
++    Registry<MenuType> MENU = io.papermc.paper.registry.RegistryAccess.registryAccess().getRegistry(io.papermc.paper.registry.RegistryKey.MENU); // Paper
+     /**
+      * Server mob effects.
       *
       * @see PotionEffectType
       */
@@ -275,7 +283,7 @@ index e9edc8c17cbd29cfdad31df13acb15bab2304735..d855e703339e6f6e50fcb19e8954a943
      /**
       * Server particles.
       *
-@@ -201,14 +205,16 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
+@@ -209,14 +213,16 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
       * Server structures.
       *
       * @see Structure
@@ -294,7 +302,7 @@ index e9edc8c17cbd29cfdad31df13acb15bab2304735..d855e703339e6f6e50fcb19e8954a943
      /**
       * Sound keys.
       *
-@@ -219,40 +225,47 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
+@@ -227,40 +233,47 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
       * Trim materials.
       *
       * @see TrimMaterial
@@ -349,7 +357,7 @@ index e9edc8c17cbd29cfdad31df13acb15bab2304735..d855e703339e6f6e50fcb19e8954a943
      /**
       * Memory Keys.
       *
-@@ -289,25 +302,27 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
+@@ -297,25 +310,27 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
       *
       * @see Frog.Variant
       */

@@ -6,19 +6,20 @@ Subject: [PATCH] Add EntityDyeEvent and CollarColorable interface
 
 diff --git a/src/main/java/io/papermc/paper/entity/CollarColorable.java b/src/main/java/io/papermc/paper/entity/CollarColorable.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..bb68e6a2528eee81eb3f26f22b9c35508f1e69c1
+index 0000000000000000000000000000000000000000..205b561c76386c02c827694b17ea50175a3c84ff
 --- /dev/null
 +++ b/src/main/java/io/papermc/paper/entity/CollarColorable.java
-@@ -0,0 +1,25 @@
+@@ -0,0 +1,26 @@
 +package io.papermc.paper.entity;
 +
 +import org.bukkit.DyeColor;
 +import org.bukkit.entity.LivingEntity;
-+import org.jetbrains.annotations.NotNull;
++import org.jspecify.annotations.NullMarked;
 +
 +/**
 + * Entities that can have their collars colored.
 + */
++@NullMarked
 +public interface CollarColorable extends LivingEntity {
 +
 +    /**
@@ -26,21 +27,21 @@ index 0000000000000000000000000000000000000000..bb68e6a2528eee81eb3f26f22b9c3550
 +     *
 +     * @return the color of the collar
 +     */
-+    @NotNull DyeColor getCollarColor();
++    DyeColor getCollarColor();
 +
 +    /**
 +     * Set the collar color of this entity
 +     *
 +     * @param color the color to apply
 +     */
-+    void setCollarColor(@NotNull DyeColor color);
++    void setCollarColor(DyeColor color);
 +}
 diff --git a/src/main/java/io/papermc/paper/event/entity/EntityDyeEvent.java b/src/main/java/io/papermc/paper/event/entity/EntityDyeEvent.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..c43a3ad32902dbb13287e801375213745ce07b3c
+index 0000000000000000000000000000000000000000..049471bac6c9b830fe7717c129173a723091963f
 --- /dev/null
 +++ b/src/main/java/io/papermc/paper/event/entity/EntityDyeEvent.java
-@@ -0,0 +1,81 @@
+@@ -0,0 +1,82 @@
 +package io.papermc.paper.event.entity;
 +
 +import org.bukkit.DyeColor;
@@ -53,24 +54,25 @@ index 0000000000000000000000000000000000000000..c43a3ad32902dbb13287e80137521374
 +import org.bukkit.event.HandlerList;
 +import org.bukkit.event.entity.EntityEvent;
 +import org.jetbrains.annotations.ApiStatus;
-+import org.jetbrains.annotations.NotNull;
-+import org.jetbrains.annotations.Nullable;
++import org.jspecify.annotations.NullMarked;
++import org.jspecify.annotations.Nullable;
 +
 +/**
 + * Called when an entity is dyed. Currently, this is called for {@link Sheep}
 + * being dyed, and {@link Wolf}/{@link Cat} collars being dyed.
 + */
++@NullMarked
 +public class EntityDyeEvent extends EntityEvent implements Cancellable {
 +
 +    private static final HandlerList HANDLER_LIST = new HandlerList();
 +
-+    private final Player player;
++    private final @Nullable Player player;
 +    private DyeColor dyeColor;
 +
 +    private boolean cancelled;
 +
 +    @ApiStatus.Internal
-+    public EntityDyeEvent(@NotNull Entity entity, @NotNull DyeColor dyeColor, @Nullable Player player) {
++    public EntityDyeEvent(final Entity entity, final DyeColor dyeColor, final @Nullable Player player) {
 +        super(entity);
 +        this.dyeColor = dyeColor;
 +        this.player = player;
@@ -81,7 +83,7 @@ index 0000000000000000000000000000000000000000..c43a3ad32902dbb13287e80137521374
 +     *
 +     * @return the DyeColor the entity is being dyed
 +     */
-+    public @NotNull DyeColor getColor() {
++    public DyeColor getColor() {
 +        return this.dyeColor;
 +    }
 +
@@ -90,7 +92,7 @@ index 0000000000000000000000000000000000000000..c43a3ad32902dbb13287e80137521374
 +     *
 +     * @param dyeColor the DyeColor the entity will be dyed
 +     */
-+    public void setColor(@NotNull DyeColor dyeColor) {
++    public void setColor(final DyeColor dyeColor) {
 +        this.dyeColor = dyeColor;
 +    }
 +
@@ -109,16 +111,16 @@ index 0000000000000000000000000000000000000000..c43a3ad32902dbb13287e80137521374
 +    }
 +
 +    @Override
-+    public void setCancelled(boolean cancel) {
++    public void setCancelled(final boolean cancel) {
 +        this.cancelled = cancel;
 +    }
 +
 +    @Override
-+    public @NotNull HandlerList getHandlers() {
++    public HandlerList getHandlers() {
 +        return HANDLER_LIST;
 +    }
 +
-+    public static @NotNull HandlerList getHandlerList() {
++    public static HandlerList getHandlerList() {
 +        return HANDLER_LIST;
 +    }
 +}
