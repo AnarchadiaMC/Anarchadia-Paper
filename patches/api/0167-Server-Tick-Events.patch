@@ -7,7 +7,7 @@ Fires event at start and end of a server tick
 
 diff --git a/src/main/java/com/destroystokyo/paper/event/server/ServerTickEndEvent.java b/src/main/java/com/destroystokyo/paper/event/server/ServerTickEndEvent.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..17e9f39ce1cc7489e936c96f95b8b0579528b222
+index 0000000000000000000000000000000000000000..c879588693c930226049e60393f2f23aad1588b9
 --- /dev/null
 +++ b/src/main/java/com/destroystokyo/paper/event/server/ServerTickEndEvent.java
 @@ -0,0 +1,62 @@
@@ -16,11 +16,12 @@ index 0000000000000000000000000000000000000000..17e9f39ce1cc7489e936c96f95b8b057
 +import org.bukkit.event.Event;
 +import org.bukkit.event.HandlerList;
 +import org.jetbrains.annotations.ApiStatus;
-+import org.jetbrains.annotations.NotNull;
++import org.jspecify.annotations.NullMarked;
 +
 +/**
 + * Called when the server has finished ticking the main loop
 + */
++@NullMarked
 +public class ServerTickEndEvent extends Event {
 +
 +    private static final HandlerList HANDLER_LIST = new HandlerList();
@@ -30,7 +31,7 @@ index 0000000000000000000000000000000000000000..17e9f39ce1cc7489e936c96f95b8b057
 +    private final long timeEnd;
 +
 +    @ApiStatus.Internal
-+    public ServerTickEndEvent(int tickNumber, double tickDuration, long timeRemaining) {
++    public ServerTickEndEvent(final int tickNumber, final double tickDuration, final long timeRemaining) {
 +        this.tickNumber = tickNumber;
 +        this.tickDuration = tickDuration;
 +        this.timeEnd = System.nanoTime() + timeRemaining;
@@ -63,19 +64,18 @@ index 0000000000000000000000000000000000000000..17e9f39ce1cc7489e936c96f95b8b057
 +        return this.timeEnd - System.nanoTime();
 +    }
 +
-+    @NotNull
++    @Override
 +    public HandlerList getHandlers() {
 +        return HANDLER_LIST;
 +    }
 +
-+    @NotNull
 +    public static HandlerList getHandlerList() {
 +        return HANDLER_LIST;
 +    }
 +}
 diff --git a/src/main/java/com/destroystokyo/paper/event/server/ServerTickStartEvent.java b/src/main/java/com/destroystokyo/paper/event/server/ServerTickStartEvent.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..fb5bbfffea8b883e4c8769484a2b64dd895cb617
+index 0000000000000000000000000000000000000000..890153657ea5b756a8a3a038d6b53857e0d17fea
 --- /dev/null
 +++ b/src/main/java/com/destroystokyo/paper/event/server/ServerTickStartEvent.java
 @@ -0,0 +1,35 @@
@@ -84,8 +84,9 @@ index 0000000000000000000000000000000000000000..fb5bbfffea8b883e4c8769484a2b64dd
 +import org.bukkit.event.Event;
 +import org.bukkit.event.HandlerList;
 +import org.jetbrains.annotations.ApiStatus;
-+import org.jetbrains.annotations.NotNull;
++import org.jspecify.annotations.NullMarked;
 +
++@NullMarked
 +public class ServerTickStartEvent extends Event {
 +
 +    private static final HandlerList HANDLER_LIST = new HandlerList();
@@ -93,7 +94,7 @@ index 0000000000000000000000000000000000000000..fb5bbfffea8b883e4c8769484a2b64dd
 +    private final int tickNumber;
 +
 +    @ApiStatus.Internal
-+    public ServerTickStartEvent(int tickNumber) {
++    public ServerTickStartEvent(final int tickNumber) {
 +        this.tickNumber = tickNumber;
 +    }
 +
@@ -104,12 +105,11 @@ index 0000000000000000000000000000000000000000..fb5bbfffea8b883e4c8769484a2b64dd
 +        return this.tickNumber;
 +    }
 +
-+    @NotNull
++    @Override
 +    public HandlerList getHandlers() {
 +        return HANDLER_LIST;
 +    }
 +
-+    @NotNull
 +    public static HandlerList getHandlerList() {
 +        return HANDLER_LIST;
 +    }
