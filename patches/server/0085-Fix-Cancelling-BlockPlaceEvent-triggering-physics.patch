@@ -5,14 +5,20 @@ Subject: [PATCH] Fix Cancelling BlockPlaceEvent triggering physics
 
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index e6cf145fa7a2968c70e9e467e3927fd38e199e06..223f8d9be5d73e296f5815db7123b95c3b345162 100644
+index c36032803e8b7e4a8537f02738075e1a6baed3b1..828f47c6aadb609402f7237f8c234d595f39c970 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
-@@ -1389,6 +1389,7 @@ public class ServerLevel extends Level implements WorldGenLevel {
+@@ -1372,11 +1372,13 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
  
      @Override
-     public void updateNeighborsAt(BlockPos pos, Block sourceBlock) {
+     public void updateNeighborsAt(BlockPos pos, Block block) {
 +        if (captureBlockStates) { return; } // Paper - Cancel all physics during placement
-         this.neighborUpdater.updateNeighborsAtExceptFromFacing(pos, sourceBlock, (Direction) null);
+         this.updateNeighborsAt(pos, block, ExperimentalRedstoneUtils.initialOrientation(this, (Direction) null, (Direction) null));
+     }
+ 
+     @Override
+     public void updateNeighborsAt(BlockPos pos, Block sourceBlock, @Nullable Orientation orientation) {
++        if (captureBlockStates) { return; } // Paper - Cancel all physics during placement
+         this.neighborUpdater.updateNeighborsAtExceptFromFacing(pos, sourceBlock, (Direction) null, orientation);
      }
  

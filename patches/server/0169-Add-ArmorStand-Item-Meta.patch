@@ -13,7 +13,7 @@ starting point for future additions in this area.
 Fixes GH-559
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/inventory/CraftItemMetas.java b/src/main/java/org/bukkit/craftbukkit/inventory/CraftItemMetas.java
-index eef3517833ff5c0cf41b89973ebc972b8ed31e0f..c9fbc01be0b0e7fd1cafb091d06496f4ba1e7c2c 100644
+index 7e3199567f25cc65046ba7374fe1a83fd2e5b191..4f5568707d725195ee19b65274454fec8bf99d64 100644
 --- a/src/main/java/org/bukkit/craftbukkit/inventory/CraftItemMetas.java
 +++ b/src/main/java/org/bukkit/craftbukkit/inventory/CraftItemMetas.java
 @@ -1,5 +1,6 @@
@@ -23,7 +23,7 @@ index eef3517833ff5c0cf41b89973ebc972b8ed31e0f..c9fbc01be0b0e7fd1cafb091d06496f4
  import java.util.function.BiFunction;
  import java.util.function.Function;
  import net.minecraft.world.item.BannerItem;
-@@ -102,7 +103,7 @@ public final class CraftItemMetas {
+@@ -103,7 +104,7 @@ public final class CraftItemMetas {
              item -> new CraftMetaSpawnEgg(item.getComponentsPatch()),
              (type, meta) -> meta instanceof CraftMetaSpawnEgg spawnEgg ? spawnEgg : new CraftMetaSpawnEgg(meta));
  

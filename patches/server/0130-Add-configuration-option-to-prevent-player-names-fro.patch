@@ -6,10 +6,10 @@ Subject: [PATCH] Add configuration option to prevent player names from being
 
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 8e951ed126453cf1ffa81e5c8aa6e6ea5db03089..cfc59f1fb52dffb13fb214dd7c9cf71d40354ef0 100644
+index e6609fb27a2614f969d342b99b4e50141f68689c..f578d18feb0497cc1a67415aed44f6d0e5029a01 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -2837,5 +2837,10 @@ public final class CraftServer implements Server {
+@@ -2863,5 +2863,10 @@ public final class CraftServer implements Server {
          commandMap.registerServerAliases();
          return true;
      }

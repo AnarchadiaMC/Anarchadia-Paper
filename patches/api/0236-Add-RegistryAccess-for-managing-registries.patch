@@ -191,10 +191,10 @@ index 80e3e64f47ac55a4978c9e5b430e2f2d1c871d1b..ac68dfce754dc7e014bb31bba32d9b24
          final RegistryKey<T> registryKey = createInternal(key);
          REGISTRY_KEYS.add(registryKey);
 diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
-index e0f652117e585882693736de8165ae9c689e1d68..fbe14c327ee9c1ac07893853ca7c699e81225281 100644
+index 3470755c65a2db38e679adc35d3d43f7fef5468d..1fe3a5e2f5c15fddfbcd503a061ebf7502907b8c 100644
 --- a/src/main/java/org/bukkit/Bukkit.java
 +++ b/src/main/java/org/bukkit/Bukkit.java
-@@ -2410,8 +2410,11 @@ public final class Bukkit {
+@@ -2434,8 +2434,11 @@ public final class Bukkit {
       * @param tClass of the registry to get
       * @param <T> type of the registry
       * @return the corresponding registry or null if not present
@@ -207,10 +207,26 @@ index e0f652117e585882693736de8165ae9c689e1d68..fbe14c327ee9c1ac07893853ca7c699e
          return server.getRegistry(tClass);
      }
 diff --git a/src/main/java/org/bukkit/Registry.java b/src/main/java/org/bukkit/Registry.java
-index 4e67b944351ec3743e5eeaba3f5de99e0df15154..39997047be9f3796d8d5d8934eb361e23d273ebd 100644
+index b4f297f90e3c1deaa1fc3f4418418588ab19b6c5..46dce7c2a543f6b165975565ea9d40654a132b9b 100644
 --- a/src/main/java/org/bukkit/Registry.java
 +++ b/src/main/java/org/bukkit/Registry.java
-@@ -98,8 +98,10 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
+@@ -86,26 +86,32 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
+      * Server art.
+      *
+      * @see Art
++     * @deprecated use {@link io.papermc.paper.registry.RegistryAccess#getRegistry(io.papermc.paper.registry.RegistryKey)} with {@link io.papermc.paper.registry.RegistryKey#PAINTING_VARIANT}
+      */
+-    Registry<Art> ART = Objects.requireNonNull(Bukkit.getRegistry(Art.class), "No registry present for Art. This is a bug.");
++    @Deprecated(since = "1.21.3") // Paper
++    Registry<Art> ART = Objects.requireNonNull(io.papermc.paper.registry.RegistryAccess.registryAccess().getRegistry(Art.class), "No registry present for Art. This is a bug.");
+     /**
+      * Attribute.
+      *
+      * @see Attribute
+      */
+-    Registry<Attribute> ATTRIBUTE = Objects.requireNonNull(Bukkit.getRegistry(Attribute.class), "No registry present for Attribute. This is a bug.");
++    Registry<Attribute> ATTRIBUTE = io.papermc.paper.registry.RegistryAccess.registryAccess().getRegistry(io.papermc.paper.registry.RegistryKey.ATTRIBUTE); // Paper
+     /**
       * Server banner patterns.
       *
       * @see PatternType
@@ -222,7 +238,16 @@ index 4e67b944351ec3743e5eeaba3f5de99e0df15154..39997047be9f3796d8d5d8934eb361e2
      /**
       * Server biomes.
       *
-@@ -113,7 +115,7 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
+      * @see Biome
++     * @deprecated use {@link io.papermc.paper.registry.RegistryAccess#getRegistry(io.papermc.paper.registry.RegistryKey)} with {@link io.papermc.paper.registry.RegistryKey#BIOME}
+      */
+-    Registry<Biome> BIOME = Objects.requireNonNull(Bukkit.getRegistry(Biome.class), "No registry present for Biome. This is a bug.");
++    @Deprecated(since = "1.21.3") // Paper
++    Registry<Biome> BIOME = Objects.requireNonNull(io.papermc.paper.registry.RegistryAccess.registryAccess().getRegistry(Biome.class), "No registry present for Biome. This is a bug.");
+     /**
+      * Server block types.
+      *
+@@ -113,7 +119,7 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
       * @apiNote BlockType is not ready for public usage yet
       */
      @ApiStatus.Internal
@@ -231,7 +256,7 @@ index 4e67b944351ec3743e5eeaba3f5de99e0df15154..39997047be9f3796d8d5d8934eb361e2
      /**
       * Custom boss bars.
       *
-@@ -155,13 +157,15 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
+@@ -155,13 +161,15 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
       *
       * @see Cat.Type
       */
@@ -249,16 +274,19 @@ index 4e67b944351ec3743e5eeaba3f5de99e0df15154..39997047be9f3796d8d5d8934eb361e2
      /**
       * Server entity types.
       *
-@@ -173,7 +177,7 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
+@@ -172,8 +180,10 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
+      * Server instruments.
       *
       * @see MusicInstrument
++     * @deprecated use {@link io.papermc.paper.registry.RegistryAccess#getRegistry(io.papermc.paper.registry.RegistryKey)} with {@link io.papermc.paper.registry.RegistryKey#INSTRUMENT}
       */
 -    Registry<MusicInstrument> INSTRUMENT = Objects.requireNonNull(Bukkit.getRegistry(MusicInstrument.class), "No registry present for MusicInstrument. This is a bug.");
-+    Registry<MusicInstrument> INSTRUMENT = io.papermc.paper.registry.RegistryAccess.registryAccess().getRegistry(io.papermc.paper.registry.RegistryKey.INSTRUMENT); // Paper
++    @Deprecated(since = "1.21.2")
++    Registry<MusicInstrument> INSTRUMENT = Objects.requireNonNull(io.papermc.paper.registry.RegistryAccess.registryAccess().getRegistry(MusicInstrument.class), "No registry present for Instruments. This is a bug."); // Paper
      /**
       * Server item types.
       *
-@@ -181,7 +185,7 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
+@@ -181,7 +191,7 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
       * @apiNote ItemType is not ready for public usage yet
       */
      @ApiStatus.Internal
@@ -267,7 +295,7 @@ index 4e67b944351ec3743e5eeaba3f5de99e0df15154..39997047be9f3796d8d5d8934eb361e2
      /**
       * Default server loot tables.
       *
-@@ -200,13 +204,13 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
+@@ -200,13 +210,13 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
       * @see MenuType
       */
      @ApiStatus.Experimental
@@ -283,7 +311,7 @@ index 4e67b944351ec3743e5eeaba3f5de99e0df15154..39997047be9f3796d8d5d8934eb361e2
      /**
       * Server particles.
       *
-@@ -229,14 +233,16 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
+@@ -229,58 +239,67 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
       * Server structures.
       *
       * @see Structure
@@ -302,7 +330,11 @@ index 4e67b944351ec3743e5eeaba3f5de99e0df15154..39997047be9f3796d8d5d8934eb361e2
      /**
       * Sound keys.
       *
-@@ -247,40 +253,47 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
+      * @see Sound
+      */
+-    Registry<Sound> SOUNDS = Objects.requireNonNull(Bukkit.getRegistry(Sound.class), "No registry present for Sound. This is a bug.");
++    Registry<Sound> SOUNDS = io.papermc.paper.registry.RegistryAccess.registryAccess().getRegistry(io.papermc.paper.registry.RegistryKey.SOUND_EVENT); // Paper
+     /**
       * Trim materials.
       *
       * @see TrimMaterial
@@ -357,7 +389,14 @@ index 4e67b944351ec3743e5eeaba3f5de99e0df15154..39997047be9f3796d8d5d8934eb361e2
      /**
       * Memory Keys.
       *
-@@ -327,25 +340,27 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
+@@ -321,31 +340,33 @@ public interface Registry<T extends Keyed> extends Iterable<T> {
+      *
+      * @see Fluid
+      */
+-    Registry<Fluid> FLUID = Objects.requireNonNull(Bukkit.getRegistry(Fluid.class), "No registry present for Fluid. This is a bug.");
++    Registry<Fluid> FLUID = io.papermc.paper.registry.RegistryAccess.registryAccess().getRegistry(io.papermc.paper.registry.RegistryKey.FLUID); // Paper
+     /**
+      * Frog variants.
       *
       * @see Frog.Variant
       */
@@ -390,10 +429,10 @@ index 4e67b944351ec3743e5eeaba3f5de99e0df15154..39997047be9f3796d8d5d8934eb361e2
       * Get the object by its key.
       *
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index 90111a9ae0b7bdd6e46e869398dc6b9898b5f87e..943f8881ea23481ea5d5125b6ec7c9c6f763f0b0 100644
+index 6bc43f3a5748a1b83aa4c4d462df3cbc9220c267..cad9c18dbe56ffcef377f0b1162bc880fc56aa6c 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -2059,8 +2059,11 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -2077,8 +2077,11 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
       * @param tClass of the registry to get
       * @param <T> type of the registry
       * @return the corresponding registry or null if not present
